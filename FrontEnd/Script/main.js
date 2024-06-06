@@ -11,6 +11,21 @@ function init() {
 }
 init();
 
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('button'); // Sélectionne tous les boutons
+    buttons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            // Retire la classe .button-clicked de tous les boutons
+            buttons.forEach(function(btn) {
+                btn.classList.remove('button-clicked');
+            });
+            // Ajoute la classe .button-clicked uniquement au bouton cliqué
+            this.classList.add('button-clicked');
+        });
+    });
+});
+
+
 // Affiche les données (filtrées ou non)
 function displayData(data) {
     const container = document.getElementById('works-container');
@@ -35,3 +50,4 @@ buttonObjet.addEventListener("click", function(){
 
 
 });
+
