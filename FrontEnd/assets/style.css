@@ -186,3 +186,36 @@ footer nav ul {
 	margin: 2em
 }
 
+.ctn {
+	margin-bottom: 50px;
+	display: flex;
+	justify-content: center;
+}
+.btn_tous, .btn_objets {
+	width: 100px;
+}
+.btn_appart {
+	width: 177px;
+}
+.btn_resto {
+	width: 218px;
+	
+}
+
+button {
+border: #1D6154 1px solid;
+border-radius: 60px;
+font-size: 16px;
+color: #1D6154;
+background-color: white;
+height: 40px;
+margin-right: 10px;
+font-weight: bold;
+font-family: syne;
+}
+
+
+.button-clicked {
+    background-color: #1D6154;
+	color: white;
+}
