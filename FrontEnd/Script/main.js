@@ -26,28 +26,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-// Affiche les données (filtrées ou non)
-function displayData(data) {
-    const container = document.getElementById('works-container');
-    container.innerHTML = ''; // Efface les anciennes données affichées
-
-    data.forEach(work => {
-        // Création et ajout des éléments au DOM comme montré précédemment
-    });
-}
-
-// Filtre et affiche les données basées sur la catégorie
-function filterData(categoryId) {
-    const filteredData = window.allData.filter(work => work.categoryId === categoryId);
-    displayData(filteredData);
-}
-
-// Configuration des écouteurs d'événements pour les boutons de filtre
-
-const buttonObjet = document.querySelector(".btn_objet");
-buttonObjet.addEventListener("click", function(){
-    // mettre fonction
-
-
-});
 
