@@ -14,14 +14,14 @@
     <script src="../FrontEnd/Script/login.js" defer></script>
 </head>
 
-<body>
+<body class="couleur_fond">
     <header>
         <h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
         <nav>
             <ul>
                 <li>projets</li>
                 <li>contact</li>
-                <li>logout</li>
+                <li> <a href="../FrontEnd/login.html">login</a></li>
                 <li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
             </ul>
         </nav>
@@ -30,34 +30,42 @@
     <main>
         <section class="login">
             <h2>Login</h2>
-            <form id="login-form">
+            <br>
+            <br>
+            <br>
+            <form id="formLogin">
+                <div id="loginEmailError"><!-- Message d'erreur pour l'email --></div>
+                <label for="email">E-mail</label>
                 <br>
-
-                <label for="email">E-mail</label><br>
-                <input type="email" id="email" autocomplete="email">
+                <input type="email" id="email" name="email" autocomplete="email" required class="case_blanche">
                 <br>
                 <br>
-
-
-
-                <label for="password">Mot de passse</label><br>
-                <input type="password" id="password" autocomplete="current-password">
                 <br>
+                <div id="loginMdpError"><!-- Message d'erreur pour le mot de passe --></div>
+                <label for="mdp">Mot de passse</label>
+                <br>
+                <input type="password" id="mdp" name="mdp" autocomplete="current-password" required
+                    class="case_blanche">
 
-                <input type="submit" value="Se connecter">
+                <input type="submit" id="login-button" class="button_login" value="Se connecter">
             </form>
-            <a href="#">Mot de passe oublié</a>
+
+            <a href="#" class="missing_word">Mot de passe oublié</a>
         </section>
     </main>
 
     <footer>
         <nav>
+            <div class="marge_haut -- largeur_bande_blanche">
             <ul>
-                <li>Mentions Légales</li>
+                <li class="postion_size">Mentions Légales</li>
             </ul>
+        </div>
         </nav>
     </footer>
+    <div class="couleur_fond">
 
+    </div>
 
 </body>
 
