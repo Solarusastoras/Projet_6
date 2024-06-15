@@ -1,27 +1,22 @@
-// Constante vers l'api //
-const APIpath = "http://localhost:5678/api/";
-
-// Récupération email,password,form //
+// Récupération email, password, form
 let inputEmail = document.querySelector("#email");
 let inputPassword = document.querySelector("#mdp");
 let form = document.querySelector("form");
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
-  const userlogins = {
-    // récup des login de l'utilisateur
-    email: inputEmail.value,
-    password: inputPassword.value,
-  };
 
-  fetch(APIpath + "users/login", {
+  fetch("http://localhost:5678/api/users/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json;charset=utf-8",
     },
-    body: JSON.stringify(userlogins),
+    body: JSON.stringify({
+      email: inputEmail.value,
+      password: inputPassword.value,
+    }),
   })
-    // Message d'erreurs //
+    // Message d'erreurs
     .then((response) => {
       if (!response.ok) {
         let ExistingErrorContainer = document.querySelector(".error_container");
@@ -29,7 +24,7 @@ form.addEventListener("submit", (event) => {
           form.removeChild(ExistingErrorContainer);
         }
 
-        // Affichage Erreur //
+        // Affichage Erreur
         const errorContainer = document.createElement("div");
         errorContainer.classList.add("error_container");
         const connexionInput = form.querySelector('input[type="submit"]');
@@ -43,15 +38,15 @@ form.addEventListener("submit", (event) => {
         return response.json();
       }
     })
-
-    //Stockage  userId,token ET redirection //
+    // Stockage userId, token ET redirection
     .then((data) => {
-      localStorage.setItem("id", data.userId);
-      localStorage.setItem("token", data.token);
-      document.location.href = "./index.html";
+      if (data) {
+        localStorage.setItem("id", data.userId);
+        localStorage.setItem("token", data.token);
+        document.location.href = "./FrontEnd/index.html";
+      }
     })
     .catch((error) => {
       console.log(error);
-      npm;
     });
 });
