@@ -336,9 +336,12 @@ a {
   text-decoration: none;
 }
 
-.edition_mode {
+.couleur_bande {
   background-color: black;
   color: white;
+}
+
+.edition_mode {
   text-align: center;
   display: flex;
   justify-content: center;
@@ -349,7 +352,6 @@ a {
   padding-top: 25px;
   font-size: 16px;
   margin: 0px 0px 0px 0px;
-  display: none;
 }
 
 .marge_haut {
