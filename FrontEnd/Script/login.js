@@ -16,7 +16,6 @@ form.addEventListener("submit", (event) => {
       password: inputPassword.value,
     }),
   })
-    // Message d'erreurs
     .then((response) => {
       if (!response.ok) {
         let ExistingErrorContainer = document.querySelector(".error_container");
@@ -24,26 +23,23 @@ form.addEventListener("submit", (event) => {
           form.removeChild(ExistingErrorContainer);
         }
 
-        // Affichage Erreur
         const errorContainer = document.createElement("div");
         errorContainer.classList.add("error_container");
         const connexionInput = form.querySelector('input[type="submit"]');
         form.insertBefore(errorContainer, connexionInput);
 
         if (response.status === 404 || response.status === 401) {
-          errorContainer.innerText =
-            "Erreur dans l’identifiant ou le mot de passe";
+          errorContainer.innerText = "Erreur dans l’identifiant ou le mot de passe";
         }
       } else {
         return response.json();
       }
     })
-    // Stockage userId, token ET redirection
     .then((data) => {
       if (data) {
         localStorage.setItem("id", data.userId);
         localStorage.setItem("token", data.token);
-        document.location.href = "./FrontEnd/index.html";
+        document.location.href = "./index.html";
       }
     })
     .catch((error) => {
