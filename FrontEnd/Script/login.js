@@ -39,7 +39,9 @@ form.addEventListener("submit", (event) => {
       if (data) {
         localStorage.setItem("id", data.userId);
         localStorage.setItem("token", data.token);
+        console.log("L'utilisateur est connecté.");
         document.location.href = "./index.html";
+        afficherModale(); 
       }
     })
     .catch((error) => {

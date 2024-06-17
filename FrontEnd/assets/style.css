@@ -355,11 +355,6 @@ a {
   display: none;
 }
 
-.edition_mode_visible {
-  display: block !important; 
-}
-
-
 
 .marge_haut {
   margin-top: 200px;
@@ -373,4 +368,18 @@ a {
 .postion_size {
   font-size: 14px;
   padding-top: 22px;
+}
+
+.edition_mode_bis {
+  display:flex;
+  justify-content: center;
+  display: none;
+}
+
+.marge_gauche {
+  margin-left: 10px;
+}
+
+.edition {
+  border: none;
 }

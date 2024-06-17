@@ -15,11 +15,12 @@
 		integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
 		crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<script src="../FrontEnd/Script/main.js" defer></script>
+	<script src="../FrontEnd/Script/modale.js" defer></script>
 </head>
 
 <body class="couleur_fond">
 	<div class="edition_mode -- couleur_bande">
-		<i class="fa-regular fa-pen-to-square"></i>mode edition
+		<i class="fa-regular fa-pen-to-square"></i> mode edition
 	</div>
 	<header>
 		<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
@@ -49,7 +50,13 @@
 			</article>
 		</section>
 		<section id="portfolio">
-			<h2>Mes Projets</h2>
+			<div class="edition_mode_bis">
+				<h2>Mes Projets</h2> <button class="edition"><i id="edition" class="marge_gauche -- fa-regular fa-pen-to-square"></i></button>
+				<button class="edition" id="edition">
+				<p >modifier</p></button>
+				
+				
+			</div>
 			<br>
 			<div class="ctn">
 				<button data-filter="0" class="btn_tous">Tous</button>

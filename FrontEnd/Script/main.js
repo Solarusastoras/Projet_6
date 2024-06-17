@@ -9,17 +9,18 @@ document.addEventListener("DOMContentLoaded", function () {
     .then((data) => {
       worksData = data; // Stockage des données dans le tableau worksData
 
-      // Sélection de tous les boutons du document
-      const buttons = document.querySelectorAll("button");
-      // Ajout d'un écouteur d'événement à chaque bouton
-      buttons.forEach(function (button) {
-        button.addEventListener("click", function () {
-          // Suppression de la classe "button-clicked" de tous les boutons
-          buttons.forEach(function (btn) {
-            btn.classList.remove("button-clicked");
-          });
-          // Ajout de la classe "button-clicked" au bouton cliqué
-          this.classList.add("button-clicked");
+     // Sélectionne tous les boutons sauf ceux ayant la classe 'edition'
+const buttons = document.querySelectorAll("button:not(.edition)");
+
+// Ajout d'un écouteur d'événement à chaque bouton sélectionné
+buttons.forEach(function (button) {
+  button.addEventListener("click", function () {
+    // Suppression de la classe "button-clicked" de tous les boutons sélectionnés
+    buttons.forEach(function (btn) {
+      btn.classList.remove("button-clicked");
+    });
+    // Ajout de la classe "button-clicked" au bouton cliqué
+    this.classList.add("button-clicked");
 
           // Récupération de la valeur de l'attribut "data-filter" du bouton cliqué
           const filterValue = this.getAttribute("data-filter");
