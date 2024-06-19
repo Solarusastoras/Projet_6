@@ -352,7 +352,6 @@ a {
   padding-top: 25px;
   font-size: 16px;
   margin: 0px 0px 0px 0px;
-  display: none;
 }
 
 
@@ -373,13 +372,12 @@ a {
 .edition_mode_bis {
   display:flex;
   justify-content: center;
-  display: none;
-}
-
-.marge_gauche {
-  margin-left: 10px;
 }
 
 .edition {
   border: none;
+}
+
+.marge_gauche {
+  margin-left: 10px;
 }

@@ -39,12 +39,25 @@ form.addEventListener("submit", (event) => {
       if (data) {
         localStorage.setItem("id", data.userId);
         localStorage.setItem("token", data.token);
+        console.log("Token:", data.token); 
         console.log("L'utilisateur est connecté.");
         document.location.href = "./index.html";
-        afficherModale(); 
+        
+        function afficherModale() {
+          // Ajoute une classe CSS aux éléments pour les rendre visibles
+          elementEditionMode.classList.add("visible");
+          buttonEdition.classList.add("visible");
+          console.log("Modale affichée");
+        }
+       
       }
     })
     .catch((error) => {
       console.log(error);
     });
+    
+    function removeToken() {
+      localStorage.removeItem("token");
+    }
+    window.addEventListener("unload", removeToken);
 });
