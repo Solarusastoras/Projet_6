@@ -197,6 +197,7 @@ inputPhoto.onchange = function () {
       // Assurez-vous que le conteneur parent est configuré pour centrer l'image
       carreBleu.style.display = "flex";
       carreBleu.style.marginTop = "80px";
+      carreBleu.style.marginLeft = "100px"
       carreBleu.style.justifyContent = "center"; // Centre horizontalement
       carreBleu.style.alignItems = "center"; // Centre verticalement (si désiré)
       previewImage.style = "display: block; wight: 129px; height: 169px;";
