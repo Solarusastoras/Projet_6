@@ -354,7 +354,6 @@ a {
   margin: 0px 0px 0px 0px;
 }
 
-
 .marge_haut {
   margin-top: 200px;
   background-color: white;
@@ -370,12 +369,18 @@ a {
 }
 
 .edition_mode_bis {
-  display:flex;
-  justify-content: center;
+  display: flex;
+  position: relative;
+  left: 42%;
 }
 
 .edition {
   border: none;
+  color: black;
+  display: flex;
+  position: relative;
+  left: 2%;
+  margin-top: 0.9%;
 }
 
 .marge_gauche {

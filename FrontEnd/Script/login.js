@@ -29,7 +29,8 @@ form.addEventListener("submit", (event) => {
         form.insertBefore(errorContainer, connexionInput);
 
         if (response.status === 404 || response.status === 401) {
-          errorContainer.innerText = "Erreur dans l’identifiant ou le mot de passe";
+          errorContainer.innerText =
+            "Erreur dans l’identifiant ou le mot de passe";
         }
       } else {
         return response.json();
@@ -39,25 +40,24 @@ form.addEventListener("submit", (event) => {
       if (data) {
         localStorage.setItem("id", data.userId);
         localStorage.setItem("token", data.token);
-        console.log("Token:", data.token); 
+        console.log("Token:", data.token);
         console.log("L'utilisateur est connecté.");
         document.location.href = "./index.html";
-        
+
         function afficherModale() {
           // Ajoute une classe CSS aux éléments pour les rendre visibles
           elementEditionMode.classList.add("visible");
           buttonEdition.classList.add("visible");
           console.log("Modale affichée");
         }
-       
       }
     })
     .catch((error) => {
       console.log(error);
     });
-    
-    function removeToken() {
-      localStorage.removeItem("token");
-    }
-    window.addEventListener("unload", removeToken);
+
+  function removeToken() {
+    localStorage.removeItem("token");
+  }
+  window.addEventListener("unload", removeToken);
 });
