@@ -146,7 +146,7 @@ buttonEdition.addEventListener("click", function () {
         const titre1 = document.createElement("h3");
         titre1.textContent = "Ajout photo";
         titre1.style =
-          "text-align: center; margin-top: 67px; font-size: 28px; ";
+          "text-align: center; margin-top: 67px; font-size: 28px; margin-bottom: -40px; ";
         fenetreDiv.appendChild(titre1);
 
         var flecheRetour = document.createElement("button");
@@ -196,6 +196,7 @@ inputPhoto.onchange = function () {
       previewImage.src = e.target.result; // Définit la source de l'élément img
       // Assurez-vous que le conteneur parent est configuré pour centrer l'image
       carreBleu.style.display = "flex";
+      carreBleu.style.marginTop = "80px";
       carreBleu.style.justifyContent = "center"; // Centre horizontalement
       carreBleu.style.alignItems = "center"; // Centre verticalement (si désiré)
       previewImage.style = "display: block; wight: 129px; height: 169px;";
@@ -239,14 +240,14 @@ inputPhoto.onchange = function () {
         var titreCategorie = document.createElement("p");
         titreCategorie.textContent = "Catégorie";
         titreCategorie.style =
-          "display:block; font-size: 16px;position:relative; left: 15%; margin-top: 32px;";
+          "display:block; font-size: 16px;position:relative; left: 15%; margin-top: 32px; margin-bottom: 15px;";
 
         // Création du select pour les catégories
         var selectCategorie = document.createElement("select");
         selectCategorie.id = "categorie"; // Ajout de l'id pour correspondre avec le htmlFor du label
 
         selectCategorie.style =
-          "width: 420px; height: 51px; position: relative; left: 15.5%; border: none; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);; background-color: white; margin-top: 32px";
+          "width: 420px; height: 51px; position: relative; left: 15.5%; border: none; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);; background-color: white;";
 
         // Création et configuration du label pour le select
         var labelSelectCategorie = document.createElement("label");
