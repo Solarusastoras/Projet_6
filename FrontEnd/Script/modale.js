@@ -174,41 +174,42 @@ buttonEdition.addEventListener("click", function () {
 
         // Création de l'élément input de type file
         var inputPhoto = document.createElement("input");
-inputPhoto.id = "imageAjouter";
-inputPhoto.type = "file";
-inputPhoto.accept = "image/*";
-inputPhoto.style.cssText = "z-index: 150; display: none;";
+        inputPhoto.id = "imageAjouter";
+        inputPhoto.type = "file";
+        inputPhoto.accept = "image/*";
+        inputPhoto.style.cssText = "z-index: 150; display: none;";
 
-carreBleu.appendChild(inputPhoto);
+        carreBleu.appendChild(inputPhoto);
 
-// Création de l'élément img pour la prévisualisation
-var previewImage = document.createElement("img");
-previewImage.id = "previewImage";
-previewImage.style = "display: none;"; // Cache l'image par défaut
-carreBleu.appendChild(previewImage); // Ajoute l'élément img au DOM
+        // Création de l'élément img pour la prévisualisation
+        var previewImage = document.createElement("img");
+        previewImage.id = "previewImage";
+        previewImage.style = "display: none;"; // Cache l'image par défaut
+        carreBleu.appendChild(previewImage); // Ajoute l'élément img au DOM
 
-// Ajoute l'inputPhoto directement
-inputPhoto.onchange = function () {
-  var file = inputPhoto.files[0]; // Obtient le fichier sélectionné
-  if (file) {
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      previewImage.src = e.target.result; // Définit la source de l'élément img
-      // Assurez-vous que le conteneur parent est configuré pour centrer l'image
-      carreBleu.style.display = "flex";
-      carreBleu.style.marginTop = "80px";
-      carreBleu.style.marginLeft = "100px"
-      carreBleu.style.justifyContent = "center"; // Centre horizontalement
-      carreBleu.style.alignItems = "center"; // Centre verticalement (si désiré)
-      previewImage.style = "display: block; wight: 129px; height: 169px;";
+        // Ajoute l'inputPhoto directement
+        inputPhoto.onchange = function () {
+          var file = inputPhoto.files[0]; // Obtient le fichier sélectionné
+          if (file) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+              previewImage.src = e.target.result; // Définit la source de l'élément img
+              // Assurez-vous que le conteneur parent est configuré pour centrer l'image
+              carreBleu.style.display = "flex";
+              carreBleu.style.marginTop = "80px";
+              carreBleu.style.marginLeft = "100px";
+              carreBleu.style.justifyContent = "center"; // Centre horizontalement
+              carreBleu.style.alignItems = "center"; // Centre verticalement (si désiré)
+              previewImage.style =
+                "display: block; wight: 129px; height: 169px;";
 
-      boutonAjouterPhoto.style.display = 'none';
-      iconeImage.style.display = 'none';
-      texteFormats.style.display = 'none';
-    };
-    reader.readAsDataURL(file); // Lit le fichier comme une URL de données
-  }
-};
+              boutonAjouterPhoto.style.display = "none";
+              iconeImage.style.display = "none";
+              texteFormats.style.display = "none";
+            };
+            reader.readAsDataURL(file); // Lit le fichier comme une URL de données
+          }
+        };
 
         // Crée un bouton pour ajouter une photo dans carré bleu
         const boutonAjouterPhoto = document.createElement("button");
@@ -280,7 +281,11 @@ inputPhoto.onchange = function () {
 
         // Fonction pour vérifier l'état des champs et ajuster la couleur du bouton
         function verifierEtats() {
-          if (inputTitre.value.trim() !== "" && selectCategorie.value !== "") {
+          if (
+            inputTitre.value.trim() !== "" &&
+            selectCategorie.value !== "" &&
+            inputPhoto.files.length > 0
+          ) {
             // Si les deux champs sont remplis, mettre le bouton en vert
             btnValider.style.backgroundColor = "green";
             envoyerDonnees();
@@ -292,42 +297,55 @@ inputPhoto.onchange = function () {
 
         var inputImageUrl = document.getElementById("imageAjouter");
 
+        function envoyerDonnees() {
+          // Appel de la fonction Image_upload pour envoyer les données
+          Image_upload()
+            .then(() => {
+              console.log("Données envoyées avec succès depuis envoyerDonnees");
+            })
+            .catch((error) => {
+              console.error(
+                "Erreur lors de l'envoi des données depuis envoyerDonnees:",
+                error
+              );
+            });
+        }
+
         // Correction de la syntaxe pour ajouter un écouteur d'événements
         btnValider.addEventListener("click", envoyerDonnees);
 
-        function envoyerDonnees() {
-          // Assurez-vous d'avoir un token valide
+        async function Image_upload() {
           var token = "data.token";
+          var formData = new FormData();
+          const inputFile = document.querySelector('input[type="file"]');
 
-          fetch("http://localhost:5678/api/works", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json;charset=utf-8",
-              Authorization: `Bearer ${token}`, // Utilisez le token correctement
-            },
-            body: JSON.stringify({
-              category: categories.value,
-              title: inputTitre.value, // Assurez-vous que 'inputTitre' est correctement défini
-              image: Image_upload.files[0],
-            }),
-          })
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error(
-                  `La requête a échoué avec le statut ${response.status}`
-                );
-              }
-              return response.json();
-            })
-            .then((data) => {
-              // Traitez la réponse ici, par exemple, afficher un message de succès
-              console.log("Données envoyées avec succès :", data);
-              // Vous pouvez ici réinitialiser le formulaire ou rediriger l'utilisateur
-            })
-            .catch((error) => {
-              console.error("Erreur lors de la requête:", error);
-              // Gérez l'erreur, par exemple, en affichant un message à l'utilisateur
+          if (inputFile.files.length > 0) {
+            formData.append("image", inputFile.files[0], "group.png");
+          }
+
+          formData.append("category", selectCategorie.value);
+          formData.append("title", inputTitre.value);
+
+          try {
+            const response = await fetch("http://localhost:5678/api/works", {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              body: formData,
             });
+
+            if (!response.ok) {
+              throw new Error(
+                `La requête a échoué avec le statut ${response.status}`
+              );
+            }
+
+            const data = await response.json();
+            console.log("Données envoyées avec succès :", data);
+          } catch (error) {
+            console.error("Erreur lors de la requête:", error);
+          }
         }
 
         // Ajouter un écouteur d'événements pour vérifier les états à chaque frappe au clavier ou changement
