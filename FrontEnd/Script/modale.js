@@ -105,13 +105,33 @@ buttonEdition.addEventListener("click", function () {
         const deleteIcon = document.createElement("i");
         deleteIcon.className = "fa-solid fa-trash-can";
         deleteIcon.style = "color: white; font-size: 10px;";
-
-        // Ajoute un gestionnaire d'événements pour l'icône, si nécessaire
-        deleteIcon.onclick = function () {
-          // Logique de suppression ici
-          console.log("Suppression de l'image :", imageObj.imageUrl);
-        };
-
+        
+        // Ajouter un écouteur d'événements au deleteIcon pour gérer le clic
+        deleteIcon.addEventListener('click', function() {
+        
+          
+        
+          if (item.id) {
+            // Si workId existe, effectuer la requête de suppression
+            fetch(`http://localhost:5678/api/works/${item.id.value}`, {
+              method: 'DELETE',
+            })
+            .then(response => {
+              if (response.ok) {
+                console.log('Projet supprimé avec succès.');
+                // Actions supplémentaires ici, comme retirer l'élément de l'interface utilisateur
+              } else {
+                console.error("Erreur lors de la suppression du projet.");
+              }
+            })
+            .catch(error => {
+              console.error("Erreur lors de la communication avec le serveur :", error);
+            });
+          } else {
+            console.error("workId est introuvable.");
+            // Assurez-vous que l'élément parent de deleteIcon a un attribut data-work-id valide
+          }
+        });
         // Ajoute l'icône au conteneur de l'icône, puis le conteneur de l'icône au conteneur de l'image
         iconContainer.appendChild(deleteIcon);
         imageContainer.appendChild(img);
@@ -177,15 +197,24 @@ buttonEdition.addEventListener("click", function () {
         inputPhoto.id = "imageAjouter";
         inputPhoto.type = "file";
         inputPhoto.accept = "image/*";
+        inputPhoto.setAttribute("accept", "image/jpeg, image/png");
         inputPhoto.style.cssText = "z-index: 150; display: none;";
-
         carreBleu.appendChild(inputPhoto);
 
         // Création de l'élément img pour la prévisualisation
         var previewImage = document.createElement("img");
+
+        inputPhoto.addEventListener("change", () => {
+          let source = window.URL.createObjectURL(inputPhoto.files[0]);
+          previewImage.src = source;
+          previewImage.classList.add("preview");
+        });
+
+        // Création de l'élément img pour la prévisualisation
+        var previewImage = document.createElement("img");
         previewImage.id = "previewImage";
-        previewImage.style = "display: none;"; // Cache l'image par défaut
-        carreBleu.appendChild(previewImage); // Ajoute l'élément img au DOM
+        previewImage.style = "display: none;";
+        carreBleu.appendChild(previewImage);
 
         // Ajoute l'inputPhoto directement
         inputPhoto.onchange = function () {
@@ -198,8 +227,9 @@ buttonEdition.addEventListener("click", function () {
               carreBleu.style.display = "flex";
               carreBleu.style.marginTop = "80px";
               carreBleu.style.marginLeft = "100px";
-              carreBleu.style.justifyContent = "center"; // Centre horizontalement
-              carreBleu.style.alignItems = "center"; // Centre verticalement (si désiré)
+              carreBleu.style.justifyContent = "center";
+              carreBleu.style.marginTop = "80px";
+              carreBleu.style.alignItems = "center";
               previewImage.style =
                 "display: block; wight: 129px; height: 169px;";
 
@@ -238,49 +268,57 @@ buttonEdition.addEventListener("click", function () {
         // Select Catégorie
 
         // Création et configuration du label pour le select
-
         var titreCategorie = document.createElement("p");
         titreCategorie.textContent = "Catégorie";
         titreCategorie.style =
           "display:block; font-size: 16px;position:relative; left: 15%; margin-top: 32px; margin-bottom: 15px;";
 
+        // Ajout du titre au document
+        document.body.appendChild(titreCategorie);
+
         // Création du select pour les catégories
         var selectCategorie = document.createElement("select");
         selectCategorie.id = "categorie"; // Ajout de l'id pour correspondre avec le htmlFor du label
-
         selectCategorie.style =
-          "width: 420px; height: 51px; position: relative; left: 15.5%; border: none; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);; background-color: white;";
+          "width: 420px; height: 51px; position: relative; left: 15.5%; border: none; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1); background-color: white;";
 
-        // Création et configuration du label pour le select
-        var labelSelectCategorie = document.createElement("label");
+        // Création d'un objet pour mapper les noms des catégories à leurs valeurs
+        var categoriesMap = {
+          Objets: 1,
+          Appartements: 2,
+          "Hotels & restaurants": 3,
+        };
 
-        // Ajouter des options au select
-        var categories = ["Objet", "Appartements", "Hotels & restaurants"]; // Exemple de catégories
-        categories.forEach(function (categorie) {
+        // Parcours de l'objet categoriesMap pour créer les options du select
+        Object.keys(categoriesMap).forEach(function (categorie) {
           var option = document.createElement("option");
-          option.value = categorie;
-          option.textContent = categorie;
+          option.value = categoriesMap[categorie]; // Utilise la valeur de l'objet categoriesMap
+          option.textContent = categorie; // Utilise la clé de l'objet categoriesMap comme texte
           selectCategorie.appendChild(option);
         });
 
-        // Définition du style de la ligne grise
+        // Ajout du select au document
+        document.body.appendChild(selectCategorie);
 
+        // Définition du style de la ligne grise
         var ligneGrise = document.createElement("div");
         ligneGrise.style =
           "width: 420px; height: 2px; background-color: grey; margin-top: 45px; margin-bottom: 32px; margin-left: 16%";
 
-        // Bouton valider
+        // Ajout de la ligne grise au document
+        document.body.appendChild(ligneGrise);
+
         // Création du bouton Valider
         var btnValider = document.createElement("button");
         btnValider.textContent = "Valider";
         btnValider.style =
           "width: 237px; height: 36px; background-color: #A7A7A7; color: white; border: none; margin-left: 28%;";
 
-        // Ajoutez le bouton au document dans un élément existant, par exemple 'document.body' ou un autre élément spécifique
-        document.body.appendChild(btnValider); // Ajustez selon l'élément cible
-
         // Fonction pour vérifier l'état des champs et ajuster la couleur du bouton
         function verifierEtats() {
+          console.log("Titre:", inputTitre.value.trim());
+          console.log("Catégory.id:", selectCategorie.value);
+
           if (
             inputTitre.value.trim() !== "" &&
             selectCategorie.value !== "" &&
@@ -288,20 +326,19 @@ buttonEdition.addEventListener("click", function () {
           ) {
             // Si les deux champs sont remplis, mettre le bouton en vert
             btnValider.style.backgroundColor = "green";
-            envoyerDonnees();
           } else {
             // Sinon, remettre le bouton en gris
             btnValider.style.backgroundColor = "#A7A7A7";
           }
         }
-
         var inputImageUrl = document.getElementById("imageAjouter");
 
         function envoyerDonnees() {
           // Appel de la fonction Image_upload pour envoyer les données
           Image_upload()
             .then(() => {
-              console.log("Données envoyées avec succès depuis envoyerDonnees");
+              console.log("Données envoyées avec succès");
+              window.location.href = "index.html";
             })
             .catch((error) => {
               console.error(
@@ -311,22 +348,22 @@ buttonEdition.addEventListener("click", function () {
             });
         }
 
-        // Correction de la syntaxe pour ajouter un écouteur d'événements
         btnValider.addEventListener("click", envoyerDonnees);
 
         async function Image_upload() {
-          var token = "data.token";
-          var formData = new FormData();
-          const inputFile = document.querySelector('input[type="file"]');
-
-          if (inputFile.files.length > 0) {
-            formData.append("image", inputFile.files[0], "group.png");
-          }
-
-          formData.append("category", selectCategorie.value);
-          formData.append("title", inputTitre.value);
-
           try {
+            const token = await rafraîchirToken(); // Assurez-vous que cette fonction est définie correctement et accessible
+            const formData = new FormData();
+            const inputFile = document.querySelector('input[type="file"]');
+
+            if (inputFile.files.length > 0) {
+              formData.append("image", inputFile.files[0]);
+            }
+
+            formData.append("category.id", selectCategorie.value);
+            formData.append("category.name", inputTitre.value.trim());
+            formData.append("title", inputTitre.value);
+
             const response = await fetch("http://localhost:5678/api/works", {
               method: "POST",
               headers: {
@@ -336,49 +373,55 @@ buttonEdition.addEventListener("click", function () {
             });
 
             if (!response.ok) {
-              throw new Error(
-                `La requête a échoué avec le statut ${response.status}`
-              );
+              throw new Error("Erreur lors de l'envoi des données");
             }
 
-            const data = await response.json();
-            console.log("Données envoyées avec succès :", data);
+            // Traitez la réponse ici
+            console.log("Données envoyées avec succès");
           } catch (error) {
-            console.error("Erreur lors de la requête:", error);
+            console.error("Erreur lors de l'envoi des données:", error);
           }
         }
 
-        // Ajouter un écouteur d'événements pour vérifier les états à chaque frappe au clavier ou changement
+        // écouteur d'événements pour vérifier les états à chaque frappe au clavier ou changement
         inputTitre.addEventListener("input", verifierEtats);
         selectCategorie.addEventListener("change", verifierEtats);
 
-        // Associe un écouteur d'événements au bouton pour déclencher un clic sur l'input
+        // écouteur d'événements au bouton pour déclencher un clic sur l'input
         boutonAjouterPhoto.addEventListener("click", function () {
           inputPhoto.click();
         });
 
         // Creation d'élément dans DOM
-        fenetreDiv.appendChild(flecheRetour);
-        fenetreDiv.appendChild(boutonAjouterPhoto);
-        carreBleu.appendChild(iconeImage);
-        fenetreDiv.appendChild(carreBleu);
-        carreBleu.appendChild(texteFormats);
+        // Condensation de la création d'éléments dans le DOM
+        fenetreDiv.append(
+          flecheRetour,
+          boutonAjouterPhoto,
+          carreBleu,
+          labelTitre,
+          inputTitre,
+          titreCategorie,
+          selectCategorie,
+          ligneGrise,
+          btnValider
+        );
+        carreBleu.append(iconeImage, texteFormats);
         galerieDiv.appendChild(fenetreDiv);
-        fenetreDiv.appendChild(labelTitre);
-        fenetreDiv.appendChild(inputTitre);
-        fenetreDiv.appendChild(titreCategorie);
-        fenetreDiv.appendChild(selectCategorie);
-        fenetreDiv.appendChild(ligneGrise);
-        fenetreDiv.appendChild(btnValider);
       });
-
-      // Ajoute un gestionnaire d'événements au bouton pour ajouter une image      addButton.addEventListener("click", addImage);
     })
     .catch((error) =>
       console.error("Erreur lors du chargement des images :", error)
     );
 
-  function removeToken() {
-    localStorage.removeItem("token");
-  }
+  document.addEventListener("DOMContentLoaded", function () {
+    var codeDeco = document.getElementById("idDeVotreElement"); // Remplacez "idDeVotreElement" par l'ID réel de votre élément
+
+    if (codeDeco) {
+      codeDeco.addEventListener("click", function removeToken() {
+        localStorage.removeItem("token");
+      });
+    } else {
+      console.error("L'élément codeDeco n'a pas été trouvé dans le DOM.");
+    }
+  });
 });

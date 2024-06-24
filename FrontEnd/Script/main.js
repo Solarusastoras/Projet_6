@@ -1,70 +1,71 @@
 // Déclaration d'un tableau vide pour stocker les données de travaux
 let worksData = [];
+let currentFilter = "0"; // Variable globale pour stocker le filtre actuel
 
-// Ajout d'un écouteur d'événement qui se déclenche lorsque le document HTML est complètement chargé
+// Fonction pour ajouter des données de travaux et appliquer le filtre actuel
+function addWorkData(newWork) {
+  worksData.push(newWork); // Ajoute les nouvelles données au tableau
+  applyFilter(); // Applique le filtre actuel aux données mises à jour
+}
+
+// Fonction pour appliquer le filtre actuel et afficher les données filtrées
+function applyFilter() {
+  let filteredData;
+  if (currentFilter == "0") {
+    filteredData = worksData.filter(work => work.categoryId >= 1 && work.categoryId <= 3);
+  } else {
+    filteredData = worksData.filter(work => work.categoryId == currentFilter);
+  }
+  displayData(filteredData); // Rafraîchit l'affichage avec les données filtrées
+}
+
+// Gestion du chargement initial des données et de l'interaction avec les boutons
 document.addEventListener("DOMContentLoaded", async function () {
-  // Transformation en fonction asynchrone
   try {
-    // Appel à l'API pour récupérer les données de travaux de manière asynchrone
     const response = await fetch("http://localhost:5678/api/works");
-    const data = await response.json(); // Attente de la conversion de la réponse en JSON
-    worksData = data; // Stockage des données dans le tableau worksData
+    const data = await response.json();
+    worksData = data;
+    applyFilter(); // Applique le filtre dès le chargement initial des données
   } catch (error) {
-    console.error(
-      "Erreur lors de la récupération des données de travaux:",
-      error
-    );
+    console.error("Erreur lors de la récupération des données de travaux:", error);
   }
 
-  // Sélectionne tous les boutons sauf ceux ayant la classe 'edition'
   const buttons = document.querySelectorAll("button:not(.edition)");
-
-  // Ajout d'un écouteur d'événement à chaque bouton sélectionné
   buttons.forEach(function (button) {
     button.addEventListener("click", function () {
-      // Suppression de la classe "button-clicked" de tous les boutons sélectionnés
-      buttons.forEach(function (btn) {
-        btn.classList.remove("button-clicked");
-      });
-      // Ajout de la classe "button-clicked" au bouton cliqué
+      buttons.forEach(btn => btn.classList.remove("button-clicked"));
       this.classList.add("button-clicked");
-
-      // Récupération de la valeur de l'attribut "data-filter" du bouton cliqué
-      const filterValue = this.getAttribute("data-filter");
-
-      let filteredData;
-      // Si la valeur du filtre est "0", on filtre les données pour ne garder que celles dont l'ID de catégorie est entre 1 et 3
-      if (filterValue == "0") {
-        filteredData = worksData.filter(
-          (work) => work.categoryId >= 1 && work.categoryId <= 3
-        );
-      } else {
-        // Sinon, on filtre les données pour ne garder que celles dont l'ID de catégorie correspond à la valeur du filtre
-        filteredData = worksData.filter(
-          (work) => work.categoryId == filterValue
-        );
-      }
-
-      // Affichage des données filtrées
-      displayData(filteredData);
+      currentFilter = this.getAttribute("data-filter"); // Mise à jour du filtre actuel
+      applyFilter(); // Applique le filtre actuel
     });
   });
 });
 
 // Fonction pour afficher les données
 function displayData(data) {
-  // Sélection du conteneur de données
   const dataContainer = document.getElementById("dataContainer");
-  // Vidage du conteneur
-  dataContainer.innerHTML = "";
+  dataContainer.innerHTML = ""; // Vidage du conteneur
 
-  // Pour chaque élément de données
-  data.forEach((item) => {
-    // Création d'une nouvelle image
+  // Création d'un tableau pour stocker les ID
+  const workIds = [];
+
+  data.forEach(item => {
+    // Ajout de l'ID du travail au tableau
+    workIds.push(item.id);
+
+    // Création d'un conteneur pour chaque travail
+    const workContainer = document.createElement("div");
+    workContainer.classList.add("work-item"); // Ajout d'une classe pour le style (optionnel)
+
+    // Création et ajout de l'image
     const newImage = document.createElement("img");
-    // Attribution de l'URL de l'image à l'attribut src de l'image
-    newImage.src = item.imageUrl;
-    // Ajout de l'image au conteneur de données
-    dataContainer.appendChild(newImage);
+    newImage.src = item.imageUrl; // Attribution de l'URL de l'image
+    workContainer.appendChild(newImage);
+
+    // Ajout du conteneur de travail au conteneur principal
+    dataContainer.appendChild(workContainer);
   });
+
+  
+  console.log(workIds); 
 }

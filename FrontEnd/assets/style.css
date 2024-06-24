@@ -133,6 +133,9 @@ body {
   margin: auto;
   font-family: "Work Sans";
   font-size: 14px;
+  background-color: #fffef8;
+  display: flex;
+  flex-direction: column;
 }
 header {
   display: flex;
@@ -296,10 +299,6 @@ button {
   color: white;
 }
 
-.couleur_fond {
-  background-color: #fffef8;
-}
-
 .login {
   display: flex;
   flex-direction: column;
@@ -348,10 +347,10 @@ a {
   flex-direction: row;
   gap: 10px;
   height: 59px;
-  width: 100%;
+  min-width: 191%;
   padding-top: 25px;
   font-size: 16px;
-  margin: 0px 0px 0px 0px;
+  margin-left: -320px;
 }
 
 .marge_haut {
