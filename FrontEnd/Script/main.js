@@ -1,11 +1,14 @@
 // Déclaration d'un tableau vide pour stocker les données de travaux
 let worksData = [];
-let currentFilter = "0"; // Variable globale pour stocker le filtre actuel
+let currentFilter = "0";
+
 
 // Fonction pour ajouter des données de travaux et appliquer le filtre actuel
 function addWorkData(newWork) {
   worksData.push(newWork); // Ajoute les nouvelles données au tableau
-  applyFilter(); // Applique le filtre actuel aux données mises à jour
+  applyFilter();
+
+   // Applique le filtre actuel aux données mises à jour
 }
 
 // Fonction pour appliquer le filtre actuel et afficher les données filtrées
@@ -53,19 +56,23 @@ function displayData(data) {
     // Ajout de l'ID du travail au tableau
     workIds.push(item.id);
 
-    // Création d'un conteneur pour chaque travail
-    const workContainer = document.createElement("div");
-    workContainer.classList.add("work-item"); // Ajout d'une classe pour le style (optionnel)
+    // Création d'un conteneur <figure> pour chaque travail
+    const figure = document.createElement("figure");
+    figure.classList.add("work-item"); // Ajout d'une classe pour le style (optionnel)
 
     // Création et ajout de l'image
     const newImage = document.createElement("img");
     newImage.src = item.imageUrl; // Attribution de l'URL de l'image
-    workContainer.appendChild(newImage);
+    figure.appendChild(newImage);
 
-    // Ajout du conteneur de travail au conteneur principal
-    dataContainer.appendChild(workContainer);
+    // Création et ajout du <figcaption>
+    const figcaption = document.createElement("figcaption");
+    figcaption.textContent = item.title; // Utiliser item.title ou une autre propriété appropriée
+    figure.appendChild(figcaption);
+
+    // Ajout du <figure> au conteneur principal
+    dataContainer.appendChild(figure);
   });
 
-  
-  console.log(workIds); 
+  console.log(workIds);
 }

@@ -1,25 +1,57 @@
-document.addEventListener("DOMContentLoaded", (event) => {
-  afficherModale();
+document.addEventListener("DOMContentLoaded", () => {
+  const modeEdition = document.querySelector(".edition_mode");
+  const buttonEditionEdition = document.querySelector(".edition");
+
+  // Votre logique ici
+  modeEdition.style.display = "inline";
+  buttonEditionEdition.style.display = "inline";
+
+  // Utiliser getToken pour accéder au token
+  localStorage.setItem(
+    "data.token",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcxOTQyNzU4MywiZXhwIjoxNzE5NTEzOTgzfQ.-3q3zyPlkd6AVZ1_W_vsWLy2rXCrORfSFarDnTu7-3w"
+  );
+  const token = localStorage.getItem("data.token");
 });
+
+const buttonEdition = document.querySelector(".edition");
+const boutonConnexion = document.querySelector(".loginButton");
+
+var lienLogin = document.querySelector("span");
 
 // Mise en place des éléments admin
 const elementEditionMode = document.querySelector(".edition_mode");
-const buttonEdition = document.querySelector(".edition");
 const buttons = document.querySelectorAll("button:not(.edition)");
+const storedData = localStorage.getItem("worksData");
+
+function loadWorksData() {
+  const storedData = localStorage.getItem("worksData");
+  if (storedData) {
+    const worksData = JSON.parse(storedData);
+    const ids = worksData.map((works) => id);
+    console.log("IDs récupérés:", ids);
+    // Vous pouvez maintenant utiliser les ids pour d'autres opérations
+  } else {
+    console.error("Aucune donnée de travaux trouvée dans localStorage.");
+  }
+}
 
 // Appeler afficherModale pour vérifier le token et afficher les éléments si nécessaire
 function afficherModale() {
-  // Utilisez la clé correcte 'data.token' pour vérifier la présence du token
-  if (localStorage.getItem("data.token")) {
-    // Utilisation de setProperty pour appliquer "display: block" avec !important
+  const estConnecte = localStorage.getItem("token") !== null;
+  if (estConnecte) {
+    document.querySelector("span").textContent = "logout";
+    lienLogin.href = "../FrontEnd/login.html";
     if (elementEditionMode) {
       elementEditionMode.style.setProperty("display", "block", "important");
     }
     if (buttonEdition) {
-      // Vérifiez si buttonEdition est bien défini
       buttonEdition.style.setProperty("display", "block", "important");
+      console.log("Mode édition activé");
+    } else {
+      lienLogin.textContent = "login";
+      lienLogin.href = "../FrontEnd/login.html";
     }
-    console.log("Mode édition activé");
   }
 }
 
@@ -105,33 +137,39 @@ buttonEdition.addEventListener("click", function () {
         const deleteIcon = document.createElement("i");
         deleteIcon.className = "fa-solid fa-trash-can";
         deleteIcon.style = "color: white; font-size: 10px;";
-        
-        // Ajouter un écouteur d'événements au deleteIcon pour gérer le clic
-        deleteIcon.addEventListener('click', function() {
-        
-          
-        
-          if (item.id) {
-            // Si workId existe, effectuer la requête de suppression
-            fetch(`http://localhost:5678/api/works/${item.id.value}`, {
-              method: 'DELETE',
-            })
-            .then(response => {
-              if (response.ok) {
-                console.log('Projet supprimé avec succès.');
-                // Actions supplémentaires ici, comme retirer l'élément de l'interface utilisateur
-              } else {
-                console.error("Erreur lors de la suppression du projet.");
+
+        // Supprimer un projet cicle
+        deleteIcon.addEventListener("click", async function () {
+          // Ajout de async ici
+          const confirmation = confirm(
+            "Êtes-vous sûr de vouloir supprimer ce projet ?"
+          );
+          const token = localStorage.getItem("data.token");
+          const projectId = imageObj.id;
+          if (confirmation) {
+            try {
+              const response = await fetch(
+                `http://localhost:5678/api/works/${projectId}`,
+                {
+                  // Ajout de await ici
+                  method: "DELETE",
+                  headers: {
+                    Authorization: `Bearer ${token}`, // Utilisez rafraîchirToken pour récupérer le token
+                  },
+                }
+              );
+              if (!response.ok) {
+                // Vérifie si la réponse est réussie
+                throw new Error("Erreur lors de la suppression du projet");
               }
-            })
-            .catch(error => {
-              console.error("Erreur lors de la communication avec le serveur :", error);
-            });
-          } else {
-            console.error("workId est introuvable.");
-            // Assurez-vous que l'élément parent de deleteIcon a un attribut data-work-id valide
+              // Gérer ici la suppression réussie, par exemple en retirant l'élément de l'interface utilisateur
+            } catch (error) {
+              console.error(error);
+              alert("Erreur lors de la suppression du projet");
+            }
           }
         });
+
         // Ajoute l'icône au conteneur de l'icône, puis le conteneur de l'icône au conteneur de l'image
         iconContainer.appendChild(deleteIcon);
         imageContainer.appendChild(img);
@@ -278,7 +316,7 @@ buttonEdition.addEventListener("click", function () {
 
         // Création du select pour les catégories
         var selectCategorie = document.createElement("select");
-        selectCategorie.id = "categorie"; // Ajout de l'id pour correspondre avec le htmlFor du label
+        selectCategorie.id = "category"; // Ajout de l'id pour correspondre avec le htmlFor du label
         selectCategorie.style =
           "width: 420px; height: 51px; position: relative; left: 15.5%; border: none; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1); background-color: white;";
 
@@ -331,69 +369,69 @@ buttonEdition.addEventListener("click", function () {
             btnValider.style.backgroundColor = "#A7A7A7";
           }
         }
-        var inputImageUrl = document.getElementById("imageAjouter");
 
-        function envoyerDonnees() {
-          // Appel de la fonction Image_upload pour envoyer les données
-          Image_upload()
-            .then(() => {
-              console.log("Données envoyées avec succès");
-              window.location.href = "index.html";
-            })
-            .catch((error) => {
-              console.error(
-                "Erreur lors de l'envoi des données depuis envoyerDonnees:",
-                error
-              );
+        document.addEventListener("DOMContentLoaded", (event) => {
+          var inputImageUrl = document.getElementById("imageAjouter");
+          const envoieForm = document.querySelector(".btnValider");
+          if (envoieForm) {
+            envoieForm.addEventListener("submit", (event) => {
+              event.preventDefault();
+
+              const formData = new FormData();
+              formData.append("image", inputPhoto.files[0]);
+              formData.append("category_id", selectCategorie.value);
+              formData.append("title", inputTitre.value);
+              Image_upload(event, formData);
+
+              fetch("http://localhost:5678/api/works", {
+                method: "POST",
+                body: formData,
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }).then((reponse) => {
+                if (reponse.ok) {
+                  alert("Projet ajouté avec succès !");
+                  // Logique supplémentaire si nécessaire
+                }
+              });
             });
-        }
-
-        btnValider.addEventListener("click", envoyerDonnees);
-
-        async function Image_upload() {
-          try {
-            const token = await rafraîchirToken(); // Assurez-vous que cette fonction est définie correctement et accessible
-            const formData = new FormData();
-            const inputFile = document.querySelector('input[type="file"]');
-
-            if (inputFile.files.length > 0) {
-              formData.append("image", inputFile.files[0]);
-            }
-
-            formData.append("category.id", selectCategorie.value);
-            formData.append("category.name", inputTitre.value.trim());
-            formData.append("title", inputTitre.value);
-
-            const response = await fetch("http://localhost:5678/api/works", {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-              body: formData,
-            });
-
-            if (!response.ok) {
-              throw new Error("Erreur lors de l'envoi des données");
-            }
-
-            // Traitez la réponse ici
-            console.log("Données envoyées avec succès");
-          } catch (error) {
-            console.error("Erreur lors de l'envoi des données:", error);
+          } else {
+            console.error(
+              "L'élément .btnValider n'a pas été trouvé dans le document."
+            );
           }
-        }
 
-        // écouteur d'événements pour vérifier les états à chaque frappe au clavier ou changement
+          document.addEventListener("DOMContentLoaded", (event) => {
+            const envoieForm = document.querySelector(".btnValider");
+            if (envoieForm) {
+              envoieForm.addEventListener("click", (event) => {
+                event.preventDefault();
+
+                const formData = new FormData();
+                formData.append("image", inputPhoto.files[0]);
+                formData.append("category_id", selectCategorie.value);
+                formData.append("title", inputTitre.value);
+
+                Image_upload(event, formData); // Assurez-vous que cette fonction gère correctement l'envoi des données
+              });
+            } else {
+              console.error(
+                "Le bouton de validation n'a pas été trouvé dans le document."
+              );
+            }
+          });
+        });
+        // Écouteurs d'événements pour vérifier les états à chaque frappe au clavier ou changement
         inputTitre.addEventListener("input", verifierEtats);
         selectCategorie.addEventListener("change", verifierEtats);
 
-        // écouteur d'événements au bouton pour déclencher un clic sur l'input
+        // Écouteur d'événements au bouton pour déclencher un clic sur l'input
         boutonAjouterPhoto.addEventListener("click", function () {
           inputPhoto.click();
         });
 
-        // Creation d'élément dans DOM
-        // Condensation de la création d'éléments dans le DOM
+        // Création d'élément dans DOM
         fenetreDiv.append(
           flecheRetour,
           boutonAjouterPhoto,
@@ -407,21 +445,11 @@ buttonEdition.addEventListener("click", function () {
         );
         carreBleu.append(iconeImage, texteFormats);
         galerieDiv.appendChild(fenetreDiv);
-      });
-    })
-    .catch((error) =>
-      console.error("Erreur lors du chargement des images :", error)
-    );
 
-  document.addEventListener("DOMContentLoaded", function () {
-    var codeDeco = document.getElementById("idDeVotreElement"); // Remplacez "idDeVotreElement" par l'ID réel de votre élément
-
-    if (codeDeco) {
-      codeDeco.addEventListener("click", function removeToken() {
-        localStorage.removeItem("token");
+        lienLogin.addEventListener("click", function removeToken() {
+          localStorage.removeItem("token");
+          console.log("token supprimé");
+        });
       });
-    } else {
-      console.error("L'élément codeDeco n'a pas été trouvé dans le DOM.");
-    }
-  });
+    });
 });

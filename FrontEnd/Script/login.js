@@ -43,21 +43,9 @@ form.addEventListener("submit", (event) => {
         console.log("Token:", data.token);
         console.log("L'utilisateur est connecté.");
         document.location.href = "./index.html";
-
-        function afficherModale() {
-          // Ajoute une classe CSS aux éléments pour les rendre visibles
-          elementEditionMode.classList.add("visible");
-          buttonEdition.classList.add("visible");
-          console.log("Modale affichée");
-        }
       }
     })
     .catch((error) => {
       console.log(error);
     });
-
-  function removeToken() {
-    localStorage.removeItem("token");
-  }
-  window.addEventListener("unload", removeToken);
 });
