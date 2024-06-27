@@ -1,18 +1,64 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const modeEdition = document.querySelector(".edition_mode");
-  const buttonEditionEdition = document.querySelector(".edition");
+const token = localStorage.getItem("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcxOTQyNzU4MywiZXhwIjoxNzE5NTEzOTgzfQ.-3q3zyPlkd6AVZ1_W_vsWLy2rXCrORfSFarDnTu7-3w");
 
-  // Votre logique ici
-  modeEdition.style.display = "inline";
-  buttonEditionEdition.style.display = "inline";
+// Création de la div pour le mode édition
+var divEditionMode = document.createElement('div');
+divEditionMode.classList.add('edition_mod',);
 
-  // Utiliser getToken pour accéder au token
-  localStorage.setItem(
-    "data.token",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcxOTQyNzU4MywiZXhwIjoxNzE5NTEzOTgzfQ.-3q3zyPlkd6AVZ1_W_vsWLy2rXCrORfSFarDnTu7-3w"
-  );
-  const token = localStorage.getItem("data.token");
-});
+// Création de l'icône
+var icon = document.createElement('i');
+icon.className = 'fa-regular fa-pen-to-square';
+
+// Ajout de l'icône et du texte à la div
+divEditionMode.appendChild(icon);
+divEditionMode.append(' mode édition');
+
+// Trouver l'élément header
+var header = document.querySelector('header');
+
+// Insérer la div avant le header
+document.body.insertBefore(divEditionMode, header);
+divEditionMode.style = "text-align: center; display: flex; justify-content: center; flex-direction: row; gap: 10px; height: 59px; min-width: 191%; padding-top: 25px; font-size: 16px; margin-left: -420px; background-color: black; color: white;"
+
+
+// button pour ouvrir Modale
+const spanProjets = document.querySelector('h2 > .projets');
+
+  // Remonter au parent <h2>
+  const h2MesProjets = spanProjets.parentNode;
+
+  // Créer le bouton
+  const button = document.createElement('button');
+  button.className = 'edition';
+
+  // Ajouter l'icône au bouton
+  const iconBis = document.createElement('i');
+  iconBis.id = 'editionIcon';
+  iconBis.className = 'marge_gauche -- fa-regular fa-pen-to-square';
+  button.appendChild(iconBis);
+
+  // Ajouter du texte au bouton
+  button.appendChild(document.createTextNode('modifier'));
+
+  // Insérer le bouton dans le DOM juste après l'élément <h2> ciblé
+  h2MesProjets.insertAdjacentElement('afterend', button);
+
+
+
+// Vérifier si l'utilisateur est connecté
+if (!utilisateurEstConnecte()) {
+  // Si l'utilisateur n'est pas connecté, cacher divEditionMode
+
+  divEditionMode.style = "display: none; color: transparent";
+  console.log("Utilisateur n'est pas connecté");
+}
+
+function utilisateurEstConnecte() {
+  // Obtenir la valeur du token depuis localStorage
+  var token = localStorage.getItem("token");
+  
+  // Retourner true si le token est égal à "data-token", sinon false
+  return token === "data-token";
+}
 
 const buttonEdition = document.querySelector(".edition");
 const boutonConnexion = document.querySelector(".loginButton");
@@ -35,27 +81,6 @@ function loadWorksData() {
     console.error("Aucune donnée de travaux trouvée dans localStorage.");
   }
 }
-
-// Appeler afficherModale pour vérifier le token et afficher les éléments si nécessaire
-function afficherModale() {
-  const estConnecte = localStorage.getItem("token") !== null;
-  if (estConnecte) {
-    document.querySelector("span").textContent = "logout";
-    lienLogin.href = "../FrontEnd/login.html";
-    if (elementEditionMode) {
-      elementEditionMode.style.setProperty("display", "block", "important");
-    }
-    if (buttonEdition) {
-      buttonEdition.style.setProperty("display", "block", "important");
-      console.log("Mode édition activé");
-    } else {
-      lienLogin.textContent = "login";
-      lienLogin.href = "../FrontEnd/login.html";
-    }
-  }
-}
-
-afficherModale();
 
 function addImage(imageUrl) {
   const img = document.createElement("img");
@@ -162,6 +187,7 @@ buttonEdition.addEventListener("click", function () {
                 // Vérifie si la réponse est réussie
                 throw new Error("Erreur lors de la suppression du projet");
               }
+              window.location.href = "index.html";
               // Gérer ici la suppression réussie, par exemple en retirant l'élément de l'interface utilisateur
             } catch (error) {
               console.error(error);
@@ -296,7 +322,7 @@ buttonEdition.addEventListener("click", function () {
         labelTitre.textContent = "Titre ";
         labelTitre.htmlFor = "inputTitre"; // Associe le label à l'input par l'ID
         labelTitre.style =
-          "font-size: 16px; color: black; display: block; position:relative;; left: 15%; margin-top: 32px ;margin-bottom: 15px";
+          "font-size: 16px; color: black; display: block; position:relative; left: 15%; margin-top: 32px ;margin-bottom: 15px";
 
         // Corriger la création de l'input pour le titre
         var inputTitre = document.createElement("input");
@@ -322,8 +348,8 @@ buttonEdition.addEventListener("click", function () {
 
         // Création d'un objet pour mapper les noms des catégories à leurs valeurs
         var categoriesMap = {
-          Objets: 1,
-          Appartements: 2,
+          "Objets": 1,
+          "Appartements": 2,
           "Hotels & restaurants": 3,
         };
 
@@ -352,85 +378,59 @@ buttonEdition.addEventListener("click", function () {
         btnValider.style =
           "width: 237px; height: 36px; background-color: #A7A7A7; color: white; border: none; margin-left: 28%;";
 
-        // Fonction pour vérifier l'état des champs et ajuster la couleur du bouton
-        function verifierEtats() {
-          console.log("Titre:", inputTitre.value.trim());
-          console.log("Catégory.id:", selectCategorie.value);
-
-          if (
-            inputTitre.value.trim() !== "" &&
-            selectCategorie.value !== "" &&
-            inputPhoto.files.length > 0
-          ) {
-            // Si les deux champs sont remplis, mettre le bouton en vert
-            btnValider.style.backgroundColor = "green";
-          } else {
-            // Sinon, remettre le bouton en gris
-            btnValider.style.backgroundColor = "#A7A7A7";
-          }
-        }
-
-        document.addEventListener("DOMContentLoaded", (event) => {
-          var inputImageUrl = document.getElementById("imageAjouter");
-          const envoieForm = document.querySelector(".btnValider");
-          if (envoieForm) {
-            envoieForm.addEventListener("submit", (event) => {
-              event.preventDefault();
-
-              const formData = new FormData();
-              formData.append("image", inputPhoto.files[0]);
-              formData.append("category_id", selectCategorie.value);
-              formData.append("title", inputTitre.value);
-              Image_upload(event, formData);
-
-              fetch("http://localhost:5678/api/works", {
-                method: "POST",
-                body: formData,
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }).then((reponse) => {
+          function sendData(data) {
+            event.preventDefault();
+            console.log("Bouton valide cliqué");
+          
+            // Création de l'objet FormData
+            const formData = new FormData();
+            formData.append("image", document.getElementById("imageAjouter").files[0]);
+            formData.append("category_id", document.getElementById("categorieSelect").value);
+            formData.append("title", document.getElementById("titreInput").value);
+          
+            const token = localStorage.getItem("data.token");
+          
+            // Envoi des données avec fetch
+            fetch("http://localhost:5678/api/works", {
+              method: "POST",
+              body: formData,
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+              .then((reponse) => {
                 if (reponse.ok) {
                   alert("Projet ajouté avec succès !");
-                  // Logique supplémentaire si nécessaire
+                } else {
+                  alert("Erreur lors de l'ajout du projet.");
                 }
+              })
+              .catch((erreur) => {
+                console.error("Erreur lors de l'envoi du formulaire:", erreur);
+                alert("Erreur lors de l'envoi du formulaire.");
               });
-            });
-          } else {
-            console.error(
-              "L'élément .btnValider n'a pas été trouvé dans le document."
-            );
+          };
+          
+          // Fonction pour vérifier l'état des champs
+          function verifierEtats() {
+            const tousRemplis = inputTitre.value.trim() !== "" && 
+                                selectCategorie.value !== "" &&
+                                inputPhoto.files.length > 0;
+            
+            btnValider.style.backgroundColor = tousRemplis ? "green" : ""; 
+          };
+          
+          // Configuration des écouteurs d'événements
+          const btnEnvoyer = document.getElementById("btnValider");
+          if (btnEnvoyer) {
+            btnEnvoyer.addEventListener("click", handleBtnValiderClick);
           }
-
-          document.addEventListener("DOMContentLoaded", (event) => {
-            const envoieForm = document.querySelector(".btnValider");
-            if (envoieForm) {
-              envoieForm.addEventListener("click", (event) => {
-                event.preventDefault();
-
-                const formData = new FormData();
-                formData.append("image", inputPhoto.files[0]);
-                formData.append("category_id", selectCategorie.value);
-                formData.append("title", inputTitre.value);
-
-                Image_upload(event, formData); // Assurez-vous que cette fonction gère correctement l'envoi des données
-              });
-            } else {
-              console.error(
-                "Le bouton de validation n'a pas été trouvé dans le document."
-              );
-            }
+          
+          inputTitre.addEventListener("input", verifierEtats);
+          selectCategorie.addEventListener("change", verifierEtats);
+          boutonAjouterPhoto.addEventListener("click", function () {
+            inputPhoto.click();
           });
-        });
-        // Écouteurs d'événements pour vérifier les états à chaque frappe au clavier ou changement
-        inputTitre.addEventListener("input", verifierEtats);
-        selectCategorie.addEventListener("change", verifierEtats);
-
-        // Écouteur d'événements au bouton pour déclencher un clic sur l'input
-        boutonAjouterPhoto.addEventListener("click", function () {
-          inputPhoto.click();
-        });
-
         // Création d'élément dans DOM
         fenetreDiv.append(
           flecheRetour,

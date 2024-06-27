@@ -335,23 +335,7 @@ a {
   text-decoration: none;
 }
 
-.couleur_bande {
-  background-color: black;
-  color: white;
-}
 
-.edition_mode {
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  flex-direction: row;
-  gap: 10px;
-  height: 59px;
-  min-width: 191%;
-  padding-top: 25px;
-  font-size: 16px;
-  margin-left: -320px;
-}
 
 .marge_haut {
   margin-top: 200px;
@@ -380,6 +364,8 @@ a {
   position: relative;
   left: 2%;
   margin-top: 0.9%;
+  gap:10px
+
 }
 
 .marge_gauche {
