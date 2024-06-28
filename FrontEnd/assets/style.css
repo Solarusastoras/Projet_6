@@ -335,8 +335,6 @@ a {
   text-decoration: none;
 }
 
-
-
 .marge_haut {
   margin-top: 200px;
   background-color: white;
@@ -364,8 +362,7 @@ a {
   position: relative;
   left: 2%;
   margin-top: 0.9%;
-  gap:10px
-
+  gap: 10px;
 }
 
 .marge_gauche {

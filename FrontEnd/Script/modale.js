@@ -1,68 +1,69 @@
-const token = localStorage.getItem("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcxOTQyNzU4MywiZXhwIjoxNzE5NTEzOTgzfQ.-3q3zyPlkd6AVZ1_W_vsWLy2rXCrORfSFarDnTu7-3w");
+// Récupérer le token du stockage local
+const token = `Bearer ${localStorage.token}`;
 
+
+// Creation banniere edition
 // Création de la div pour le mode édition
-var divEditionMode = document.createElement('div');
-divEditionMode.classList.add('edition_mod',);
+var divEditionMode = document.createElement("div");
+divEditionMode.classList.add("edition_mod");
 
 // Création de l'icône
-var icon = document.createElement('i');
-icon.className = 'fa-regular fa-pen-to-square';
-
-// Ajout de l'icône et du texte à la div
+var icon = document.createElement("i");
+icon.className = "fa-regular fa-pen-to-square";
 divEditionMode.appendChild(icon);
-divEditionMode.append(' mode édition');
+divEditionMode.append(" mode édition");
+divEditionMode.style =
+  "text-align: center; display: flex; justify-content: center; flex-direction: row; gap: 10px; height: 59px; min-width: 191%; padding-top: 25px; font-size: 16px; margin-left: -420px; background-color: black; color: white;";
 
-// Trouver l'élément header
-var header = document.querySelector('header');
-
+var header = document.querySelector("header");
 // Insérer la div avant le header
 document.body.insertBefore(divEditionMode, header);
-divEditionMode.style = "text-align: center; display: flex; justify-content: center; flex-direction: row; gap: 10px; height: 59px; min-width: 191%; padding-top: 25px; font-size: 16px; margin-left: -420px; background-color: black; color: white;"
 
 
 // button pour ouvrir Modale
-const spanProjets = document.querySelector('h2 > .projets');
+const spanProjets = document.querySelector("h2 > .projets");
+// Remonter au parent <h2>
+const h2MesProjets = spanProjets.parentNode;
 
-  // Remonter au parent <h2>
-  const h2MesProjets = spanProjets.parentNode;
+// Créer le bouton
+const button = document.createElement("button");
+button.className = "edition";
 
-  // Créer le bouton
-  const button = document.createElement('button');
-  button.className = 'edition';
+// Ajouter l'icône au bouton
+const iconBis = document.createElement("i");
+iconBis.id = "editionIcon";
+iconBis.className = "marge_gauche -- fa-regular fa-pen-to-square";
+button.appendChild(iconBis);
 
-  // Ajouter l'icône au bouton
-  const iconBis = document.createElement('i');
-  iconBis.id = 'editionIcon';
-  iconBis.className = 'marge_gauche -- fa-regular fa-pen-to-square';
-  button.appendChild(iconBis);
+// Ajouter du texte au bouton
+button.appendChild(document.createTextNode("modifier"));
 
-  // Ajouter du texte au bouton
-  button.appendChild(document.createTextNode('modifier'));
+// Insérer le bouton dans le DOM juste après l'élément <h2> ciblé
+h2MesProjets.insertAdjacentElement("afterend", button);
 
-  // Insérer le bouton dans le DOM juste après l'élément <h2> ciblé
-  h2MesProjets.insertAdjacentElement('afterend', button);
+// Création de la div pour le mode édition
+var divEditionMode = document.createElement("div");
+divEditionMode.classList.add("edition_mod");
 
+// Fonction pour vérifier la page et ajuster la visibilité de l'élément
 
-
-// Vérifier si l'utilisateur est connecté
-if (!utilisateurEstConnecte()) {
-  // Si l'utilisateur n'est pas connecté, cacher divEditionMode
-
-  divEditionMode.style = "display: none; color: transparent";
-  console.log("Utilisateur n'est pas connecté");
-}
-
-function utilisateurEstConnecte() {
-  // Obtenir la valeur du token depuis localStorage
-  var token = localStorage.getItem("token");
-  
-  // Retourner true si le token est égal à "data-token", sinon false
-  return token === "data-token";
+function utilisateurConnecte() {
+  // Vérifie si `data` et `data.token` sont définis
+  if (localStorage.token) {
+    divEditionMode.style.display = "block !important";
+    iconBis.style.display = "block !important";
+    iconBis.style.color = "black !important";
+    localStorage.setItem("token", data.token);
+  } else {
+    divEditionMode.style.display = "block !important";
+    iconBis.style.display = "block !important";
+    iconBis.style.color = "black !important";
+    console.error("Token non reçu ou invalide.");
+  }
 }
 
 const buttonEdition = document.querySelector(".edition");
 const boutonConnexion = document.querySelector(".loginButton");
-
 var lienLogin = document.querySelector("span");
 
 // Mise en place des éléments admin
@@ -169,7 +170,7 @@ buttonEdition.addEventListener("click", function () {
           const confirmation = confirm(
             "Êtes-vous sûr de vouloir supprimer ce projet ?"
           );
-          const token = localStorage.getItem("data.token");
+        
           const projectId = imageObj.id;
           if (confirmation) {
             try {
@@ -179,7 +180,7 @@ buttonEdition.addEventListener("click", function () {
                   // Ajout de await ici
                   method: "DELETE",
                   headers: {
-                    Authorization: `Bearer ${token}`, // Utilisez rafraîchirToken pour récupérer le token
+                    Authorization: `Bearer ${localStorage.token}`,
                   },
                 }
               );
@@ -348,8 +349,8 @@ buttonEdition.addEventListener("click", function () {
 
         // Création d'un objet pour mapper les noms des catégories à leurs valeurs
         var categoriesMap = {
-          "Objets": 1,
-          "Appartements": 2,
+          Objets: 1,
+          Appartements: 2,
           "Hotels & restaurants": 3,
         };
 
@@ -374,75 +375,60 @@ buttonEdition.addEventListener("click", function () {
 
         // Création du bouton Valider
         var btnValider = document.createElement("button");
+        btnValider.id = "btnValider"; // Ajout d'un ID pour cohérence
         btnValider.textContent = "Valider";
         btnValider.style =
           "width: 237px; height: 36px; background-color: #A7A7A7; color: white; border: none; margin-left: 28%;";
+        document.body.appendChild(btnValider); // Ajout du bouton au document
 
-          function sendData(data) {
-            event.preventDefault();
-            console.log("Bouton valide cliqué");
-          
-            // Création de l'objet FormData
-            const formData = new FormData();
-            formData.append("image", document.getElementById("imageAjouter").files[0]);
-            formData.append("category_id", document.getElementById("categorieSelect").value);
-            formData.append("title", document.getElementById("titreInput").value);
-          
-            const token = localStorage.getItem("data.token");
-          
-            // Envoi des données avec fetch
-            fetch("http://localhost:5678/api/works", {
-              method: "POST",
-              body: formData,
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
+        const formData = new FormData();
+          formData.append("image", inputPhoto.files[0]);
+          formData.append("category_id", selectCategorie.value);
+          formData.append("title", inputTitre.value);
+        
+        
+        function sendData(event) {
+          event.preventDefault();
+
+          fetch("http://localhost:5678/api/works", {
+            method: "POST",
+            body: formData,
+            headers: {
+              Authorization: `Bearer ${localStorage.token}`,
+            },
+          })
+            .then((reponse) => {
+              if (reponse.ok) {
+                window.location.href = 'index.html';
+              } else {
+                // Gestion de l'erreur
+              }
             })
-              .then((reponse) => {
-                if (reponse.ok) {
-                  alert("Projet ajouté avec succès !");
-                } else {
-                  alert("Erreur lors de l'ajout du projet.");
-                }
-              })
-              .catch((erreur) => {
-                console.error("Erreur lors de l'envoi du formulaire:", erreur);
-                alert("Erreur lors de l'envoi du formulaire.");
-              });
-          };
-          
-          // Fonction pour vérifier l'état des champs
-          function verifierEtats() {
-            const tousRemplis = inputTitre.value.trim() !== "" && 
-                                selectCategorie.value !== "" &&
-                                inputPhoto.files.length > 0;
-            
-            btnValider.style.backgroundColor = tousRemplis ? "green" : ""; 
-          };
-          
-          // Configuration des écouteurs d'événements
-          const btnEnvoyer = document.getElementById("btnValider");
-          if (btnEnvoyer) {
-            btnEnvoyer.addEventListener("click", handleBtnValiderClick);
-          }
-          
-          inputTitre.addEventListener("input", verifierEtats);
-          selectCategorie.addEventListener("change", verifierEtats);
-          boutonAjouterPhoto.addEventListener("click", function () {
-            inputPhoto.click();
-          });
+            .catch((erreur) => {
+              console.error("Erreur lors de l'envoi du formulaire:", erreur);
+            });
+        }
+
+
+        function verifierEtats() {
+          const tousRemplis =
+            inputTitre.value.trim() !== "" &&
+            selectCategorie.value !== "" &&
+            inputPhoto.files.length > 0;
+          btnValider.style.backgroundColor = tousRemplis ? "green" : "";
+        }
+
+        // Correction de la fonction manquante et utilisation de sendData
+        btnValider.addEventListener("click", sendData);
+
+        inputTitre.addEventListener("input", verifierEtats);
+        selectCategorie.addEventListener("change", verifierEtats);
+        boutonAjouterPhoto.addEventListener("click", function () {
+          inputPhoto.click();
+        });
         // Création d'élément dans DOM
-        fenetreDiv.append(
-          flecheRetour,
-          boutonAjouterPhoto,
-          carreBleu,
-          labelTitre,
-          inputTitre,
-          titreCategorie,
-          selectCategorie,
-          ligneGrise,
-          btnValider
-        );
+        fenetreDiv.append(flecheRetour, boutonAjouterPhoto, carreBleu,labelTitre,inputTitre, titreCategorie, selectCategorie, ligneGrise,btnValider);
+
         carreBleu.append(iconeImage, texteFormats);
         galerieDiv.appendChild(fenetreDiv);
 
