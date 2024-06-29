@@ -1,6 +1,6 @@
-// Récupérer le token du stockage local
-const token = `Bearer ${localStorage.token}`;
-
+function stockerToken(token) {
+  localStorage.setItem("token", token);
+}
 
 // Creation banniere edition
 // Création de la div pour le mode édition
@@ -170,32 +170,38 @@ buttonEdition.addEventListener("click", function () {
           const confirmation = confirm(
             "Êtes-vous sûr de vouloir supprimer ce projet ?"
           );
-        
+      
+          const token = stockerToken
           const projectId = imageObj.id;
           if (confirmation) {
             try {
+              
               const response = await fetch(
                 `http://localhost:5678/api/works/${projectId}`,
                 {
                   // Ajout de await ici
                   method: "DELETE",
                   headers: {
-                    Authorization: `Bearer ${localStorage.token}`,
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
                   },
                 }
               );
               if (!response.ok) {
                 // Vérifie si la réponse est réussie
-                throw new Error("Erreur lors de la suppression du projet");
+                throw new Error(`Erreur: ${response.status}`);
               }
               window.location.href = "index.html";
-              // Gérer ici la suppression réussie, par exemple en retirant l'élément de l'interface utilisateur
+              
             } catch (error) {
-              console.error(error);
-              alert("Erreur lors de la suppression du projet");
+              console.error("Erreur lors de la suppression du projet", error);
             }
+          } else {
+            console.log("Token d'authentification non trouvé. Connexion requise.");
           }
-        });
+        }
+          
+        );
 
         // Ajoute l'icône au conteneur de l'icône, puis le conteneur de l'icône au conteneur de l'image
         iconContainer.appendChild(deleteIcon);
@@ -385,15 +391,18 @@ buttonEdition.addEventListener("click", function () {
           formData.append("image", inputPhoto.files[0]);
           formData.append("category_id", selectCategorie.value);
           formData.append("title", inputTitre.value);
-        
-        
+          
+          function getStoredToken() {
+            return localStorage.getItem("token"); // Assurez-vous que le token est correctement stocké avec la clé "token"
+          }
+          
         function sendData(event) {
           event.preventDefault();
-
           fetch("http://localhost:5678/api/works", {
             method: "POST",
             body: formData,
             headers: {
+              "Content-Type": "multipart/form-data/json",
               Authorization: `Bearer ${localStorage.token}`,
             },
           })

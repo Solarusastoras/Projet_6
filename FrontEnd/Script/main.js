@@ -8,7 +8,6 @@ function addWorkData(newWork) {
   worksData.push(newWork); // Ajoute les nouvelles données au tableau
   applyFilter();
 
-   // Applique le filtre actuel aux données mises à jour
 }
 
 // Fonction pour appliquer le filtre actuel et afficher les données filtrées
