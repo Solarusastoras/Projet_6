@@ -13,7 +13,7 @@ formConnexion.addEventListener("submit", async (event) => {
   const userLogin = {
     email: inputEmail.value,
     password: inputPassword.value,
-  }
+  };
   const userBodyValue = JSON.stringify(userLogin);
   fetch("http://localhost:5678/api/users/login", {
     method: "POST",
@@ -22,17 +22,17 @@ formConnexion.addEventListener("submit", async (event) => {
     },
     body: userBodyValue,
   })
-    .then(res => {
+    .then((res) => {
       if (res.status === 200) {
         return res.json();
       } else {
         throw new Error("Erreur dans l'identifiant ou le mot de passe");
       }
     })
-    .then(data => {
-      console.log("Connexion Reussi et le Token est : " + data.token);
+    .then((data) => {
       localStorage.setItem("token", data.token);
-      location.href = "./index.html";
+      location.href = "./index.html"; // Commentez cette ligne pour le débogage
+      console.log("Connexion Réussi et le Token est : " + data.token);
     })
     .catch((error) => {
       afficherErreur(error.message);
@@ -40,11 +40,17 @@ formConnexion.addEventListener("submit", async (event) => {
 });
 
 function afficherErreur(message) {
-  const divErreur = document.createElement("div")
-  divErreur.classList.add("erreur")
-  const messageErreurElement = document.createElement("p")
-  messageErreurElement.innerText = message
+  console.error(message); // Pour le débogage dans la console
 
-  divErreur.appendChild(messageErreurElement)
-  sectionLogin.insertBefore(divErreur, formLogin)
+  const divErreur = document.createElement("div");
+  divErreur.classList.add("erreur");
+
+  const messageErreurElement = document.createElement("p");
+  messageErreurElement.innerText = message;
+
+  divErreur.appendChild(messageErreurElement);
+  formConnexion.insertBefore(divErreur, formConnexion.firstChild); // Utilisation de formConnexion
+}
+function stockerToken(token) {
+  localStorage.setItem("token", token);
 }

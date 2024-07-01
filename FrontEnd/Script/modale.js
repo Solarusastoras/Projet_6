@@ -1,7 +1,28 @@
 function stockerToken(token) {
-  localStorage.setItem("token", token);
+  if (token) {
+    localStorage.setItem("token", token);
+    return true; // Indique que le token a été stocké
+  }
+  return false;
 }
 
+function tokenEstInvalide() {
+  const token = localStorage.getItem("token");
+  return token && token.length === 0; // Vérifie si le token est non nul et non vide
+}
+
+function utilisateurNonConnecte() {
+  if (okenEstInvalide()) {
+    divEditionMode.style.display = "none";
+    iconBis.style.display = "none";
+    iconBis.style.color = "transparent";
+    console.error("Token non reçu ou invalide.");
+  } else {
+    divEditionMode.style.display = "block";
+    iconBis.style.display = "block";
+    iconBis.style.color = "black";
+  }
+}
 // Creation banniere edition
 // Création de la div pour le mode édition
 var divEditionMode = document.createElement("div");
@@ -18,7 +39,6 @@ divEditionMode.style =
 var header = document.querySelector("header");
 // Insérer la div avant le header
 document.body.insertBefore(divEditionMode, header);
-
 
 // button pour ouvrir Modale
 const spanProjets = document.querySelector("h2 > .projets");
@@ -46,21 +66,6 @@ var divEditionMode = document.createElement("div");
 divEditionMode.classList.add("edition_mod");
 
 // Fonction pour vérifier la page et ajuster la visibilité de l'élément
-
-function utilisateurConnecte() {
-  // Vérifie si `data` et `data.token` sont définis
-  if (localStorage.token) {
-    divEditionMode.style.display = "block !important";
-    iconBis.style.display = "block !important";
-    iconBis.style.color = "black !important";
-    localStorage.setItem("token", data.token);
-  } else {
-    divEditionMode.style.display = "block !important";
-    iconBis.style.display = "block !important";
-    iconBis.style.color = "black !important";
-    console.error("Token non reçu ou invalide.");
-  }
-}
 
 const buttonEdition = document.querySelector(".edition");
 const boutonConnexion = document.querySelector(".loginButton");
@@ -170,12 +175,11 @@ buttonEdition.addEventListener("click", function () {
           const confirmation = confirm(
             "Êtes-vous sûr de vouloir supprimer ce projet ?"
           );
-      
-          const token = stockerToken
+
+          const token = stockerToken;
           const projectId = imageObj.id;
           if (confirmation) {
             try {
-              
               const response = await fetch(
                 `http://localhost:5678/api/works/${projectId}`,
                 {
@@ -192,16 +196,15 @@ buttonEdition.addEventListener("click", function () {
                 throw new Error(`Erreur: ${response.status}`);
               }
               window.location.href = "index.html";
-              
             } catch (error) {
               console.error("Erreur lors de la suppression du projet", error);
             }
           } else {
-            console.log("Token d'authentification non trouvé. Connexion requise.");
+            console.log(
+              "Token d'authentification non trouvé. Connexion requise."
+            );
           }
-        }
-          
-        );
+        });
 
         // Ajoute l'icône au conteneur de l'icône, puis le conteneur de l'icône au conteneur de l'image
         iconContainer.appendChild(deleteIcon);
@@ -225,7 +228,9 @@ buttonEdition.addEventListener("click", function () {
       // Ajoute le bouton à galerieDiv
       galerieDiv.appendChild(addButton);
 
-      //---Modale : ajouter photo + titre et catégorie
+      //--------------–--------------------------------------------
+      //----------------    Modale n2    -------------------------
+      //--------------–--------------------------------------------
 
       addButton.addEventListener("click", function () {
         // Crée une nouvelle "fenêtre" div
@@ -265,53 +270,40 @@ buttonEdition.addEventListener("click", function () {
 
         // Création de l'élément input de type file
         var inputPhoto = document.createElement("input");
-        inputPhoto.id = "imageAjouter";
-        inputPhoto.type = "file";
+        inputPhoto.setAttribute("id", "input_file");
+        inputPhoto.setAttribute("type", "file");
         inputPhoto.accept = "image/*";
-        inputPhoto.setAttribute("accept", "image/jpeg, image/png");
+        inputPhoto.setAttribute("accept", "image/png, image/jpeg");
         inputPhoto.style.cssText = "z-index: 150; display: none;";
         carreBleu.appendChild(inputPhoto);
 
         // Création de l'élément img pour la prévisualisation
         var previewImage = document.createElement("img");
-
-        inputPhoto.addEventListener("change", () => {
-          let source = window.URL.createObjectURL(inputPhoto.files[0]);
-          previewImage.src = source;
-          previewImage.classList.add("preview");
-        });
-
-        // Création de l'élément img pour la prévisualisation
-        var previewImage = document.createElement("img");
         previewImage.id = "previewImage";
-        previewImage.style = "display: none;";
-        carreBleu.appendChild(previewImage);
+        previewImage.style.display = "none"; // Cache l'image par défaut
+        carreBleu.appendChild(previewImage); // Ajoute l'image au conteneur spécifié
 
-        // Ajoute l'inputPhoto directement
-        inputPhoto.onchange = function () {
-          var file = inputPhoto.files[0]; // Obtient le fichier sélectionné
-          if (file) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-              previewImage.src = e.target.result; // Définit la source de l'élément img
-              // Assurez-vous que le conteneur parent est configuré pour centrer l'image
-              carreBleu.style.display = "flex";
-              carreBleu.style.marginTop = "80px";
-              carreBleu.style.marginLeft = "100px";
-              carreBleu.style.justifyContent = "center";
-              carreBleu.style.marginTop = "80px";
-              carreBleu.style.alignItems = "center";
-              previewImage.style =
-                "display: block; wight: 129px; height: 169px;";
+        // Gestion de l'événement change sur inputPhoto
+        inputPhoto.addEventListener("change", function () {
+          if (this.files && this.files[0]) {
+            var file = this.files[0]; // Obtient le fichier sélectionné
+            let src = URL.createObjectURL(file);
 
-              boutonAjouterPhoto.style.display = "none";
-              iconeImage.style.display = "none";
-              texteFormats.style.display = "none";
-            };
-            reader.readAsDataURL(file); // Lit le fichier comme une URL de données
+            // Met à jour l'attribut src de previewImage et modifie le style pour l'afficher
+            previewImage.src = src;
+            previewImage.style.cssText =
+              "display: block; width: 129px; height: 169px;";
+            previewImage.classList.add("preview");
+
+            // Modifie le style de carreBleu pour afficher l'image correctement
+            carreBleu.style.cssText =
+              "display: flex; margin-top: 80px; margin-left: 100px; justify-content: center; align-items: center;";
+            // Cache les éléments non nécessaires après la sélection de l'image
+            boutonAjouterPhoto.style.display = "none";
+            iconeImage.style.display = "none";
+            texteFormats.style.display = "none";
           }
-        };
-
+        });
         // Crée un bouton pour ajouter une photo dans carré bleu
         const boutonAjouterPhoto = document.createElement("button");
         boutonAjouterPhoto.textContent = "+ Ajouter une photo";
@@ -331,13 +323,13 @@ buttonEdition.addEventListener("click", function () {
         labelTitre.style =
           "font-size: 16px; color: black; display: block; position:relative; left: 15%; margin-top: 32px ;margin-bottom: 15px";
 
-        // Corriger la création de l'input pour le titre
         var inputTitre = document.createElement("input");
+        inputTitre.type = "text";
+        inputTitre.id = "inputTitre";
         inputTitre.style.cssText =
           "width: 420px; height: 51px; position: relative;left: 15%; border: none; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);";
 
         // Select Catégorie
-
         // Création et configuration du label pour le select
         var titreCategorie = document.createElement("p");
         titreCategorie.textContent = "Catégorie";
@@ -354,21 +346,27 @@ buttonEdition.addEventListener("click", function () {
           "width: 420px; height: 51px; position: relative; left: 15.5%; border: none; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1); background-color: white;";
 
         // Création d'un objet pour mapper les noms des catégories à leurs valeurs
-        var categoriesMap = {
+        const categoriesMap = {
           Objets: 1,
           Appartements: 2,
           "Hotels & restaurants": 3,
         };
 
-        // Parcours de l'objet categoriesMap pour créer les options du select
+        // Assurez-vous que selectCategorie est déclaré quelque part
+        selectCategorie.addEventListener("change", handleChange);
+
+        function handleChange() {
+          const selectedValue = this.value;
+          console.log("Valeur de la catégorie sélectionnée:", selectedValue);
+        }
+
         Object.keys(categoriesMap).forEach(function (categorie) {
-          var option = document.createElement("option");
-          option.value = categoriesMap[categorie]; // Utilise la valeur de l'objet categoriesMap
-          option.textContent = categorie; // Utilise la clé de l'objet categoriesMap comme texte
+          const option = document.createElement("option");
+          option.value = categoriesMap[categorie];
+          option.textContent = categorie;
           selectCategorie.appendChild(option);
         });
 
-        // Ajout du select au document
         document.body.appendChild(selectCategorie);
 
         // Définition du style de la ligne grise
@@ -387,60 +385,94 @@ buttonEdition.addEventListener("click", function () {
           "width: 237px; height: 36px; background-color: #A7A7A7; color: white; border: none; margin-left: 28%;";
         document.body.appendChild(btnValider); // Ajout du bouton au document
 
-        const formData = new FormData();
-          formData.append("image", inputPhoto.files[0]);
-          formData.append("category_id", selectCategorie.value);
-          formData.append("title", inputTitre.value);
-          
-          function getStoredToken() {
-            return localStorage.getItem("token"); // Assurez-vous que le token est correctement stocké avec la clé "token"
+        // Envoie du formulaire
+
+        var inputTitreValeurGlobale;
+
+        document.addEventListener("DOMContentLoaded", function () {
+          var inputTitre = document.getElementById("inputTitre");
+          if (inputTitre) {
+            inputTitre.addEventListener("input", function () {
+              const valeurTitre = inputTitre.value;
+
+              console.log(valeurTitre);
+            });
           }
+        });
+
+        const categoryId = category.value;
+        const categoryName = category.options[category.selectedIndex].text;
+
+       
+        formData.append("photo", inputPhoto.src);
+        formData.append("category", selectCategorie.value);
+        formData.append("title", inputTitreValeurGlobale);
+        const formData = {
+          title: title.value,
+          categoryId: category.value,
+          imagUrl: previewImage.src,
+          category: {
+            id: category.value,
+            name: category.options[category.selectedIndex].text,
+          },
+        };
+
+        function stockerToken(token) {
+          localStorage.setItem("token", token);
+        }
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
           
-        function sendData(event) {
-          event.preventDefault();
-          fetch("http://localhost:5678/api/works", {
+          fetch("http://localhost:5678/api/works/", {
             method: "POST",
-            body: formData,
+            body: JSON.stringify(formData),
             headers: {
-              "Content-Type": "multipart/form-data/json",
-              Authorization: `Bearer ${localStorage.token}`,
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           })
-            .then((reponse) => {
-              if (reponse.ok) {
-                window.location.href = 'index.html';
-              } else {
-                // Gestion de l'erreur
-              }
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data);
+              console.log("Réponse du serveur:", data);
             })
-            .catch((erreur) => {
-              console.error("Erreur lors de l'envoi du formulaire:", erreur);
+            .catch((error) => {
+              console.error("Erreur lors de l'envoi des données:", error);
             });
-        }
-
+        });
 
         function verifierEtats() {
           const tousRemplis =
             inputTitre.value.trim() !== "" &&
             selectCategorie.value !== "" &&
             inputPhoto.files.length > 0;
-          btnValider.style.backgroundColor = tousRemplis ? "green" : "";
+          btnValider.style.backgroundColor = tousRemplis ? "#1D6154" : "";
         }
 
         // Correction de la fonction manquante et utilisation de sendData
         btnValider.addEventListener("click", sendData);
-
         inputTitre.addEventListener("input", verifierEtats);
         selectCategorie.addEventListener("change", verifierEtats);
         boutonAjouterPhoto.addEventListener("click", function () {
           inputPhoto.click();
         });
         // Création d'élément dans DOM
-        fenetreDiv.append(flecheRetour, boutonAjouterPhoto, carreBleu,labelTitre,inputTitre, titreCategorie, selectCategorie, ligneGrise,btnValider);
+        fenetreDiv.append(
+          flecheRetour,
+          boutonAjouterPhoto,
+          carreBleu,
+          labelTitre,
+          inputTitre,
+          titreCategorie,
+          selectCategorie,
+          ligneGrise,
+          btnValider
+        );
 
         carreBleu.append(iconeImage, texteFormats);
         galerieDiv.appendChild(fenetreDiv);
 
+        const lienLogin = document.querySelector(".co_deco");
         lienLogin.addEventListener("click", function removeToken() {
           localStorage.removeItem("token");
           console.log("token supprimé");
