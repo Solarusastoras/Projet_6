@@ -321,8 +321,8 @@ buttonEdition.addEventListener("click", function () {
 
         // Ajout de l'écouteur d'événements sur l'inputTitre pour récupérer sa valeur lors de la saisie
         inputTitre.addEventListener("input", (event) => {
-          let titre = event.target.value; // Accès direct à la valeur de l'input
-          console.log(titre); // Affichage de la valeur dans la console
+          let titre = event.target.value;
+          console.log(titre); 
         });
 
         // Select Catégorie
@@ -361,6 +361,11 @@ buttonEdition.addEventListener("click", function () {
           selectCategorie.appendChild(option);
         });
 
+        selectCategorie.addEventListener("change", (event) => {
+          let valeurSelectionnee = selectCategorie.value; 
+          console.log(valeurSelectionnee); // Affichage de la valeur dans la console (optionnel)
+        });
+
         document.body.appendChild(selectCategorie);
 
         // Définition du style de la ligne grise
@@ -389,7 +394,7 @@ buttonEdition.addEventListener("click", function () {
 
         verifierEtats();
 
-        const selectedValue = this.value;
+        let valeurSelectionnee = selectCategorie.value;
         let nom = inputTitre.value;
         console.log(nom.value);
 
@@ -398,7 +403,7 @@ buttonEdition.addEventListener("click", function () {
           e.preventDefault();
           const formData = new FormData();
           formData.append("image", inputPhoto.files[0]);
-          formData.append("category", selectedValue);
+          formData.append("category",valeurSelectionnee);
           formData.append("title", titre);
           function stockerToken(token) {
             localStorage.setItem("token", token);
@@ -415,6 +420,7 @@ buttonEdition.addEventListener("click", function () {
             .then((data) => {
               console.log(data);
               console.log("Réponse du serveur:", data);
+              window.location.href = 'index.html';
             })
             .catch((error) => {
               console.error("Erreur lors de l'envoi des données:", error);
