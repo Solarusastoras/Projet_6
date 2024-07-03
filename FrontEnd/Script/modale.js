@@ -212,7 +212,6 @@ buttonEdition.addEventListener("click", function () {
       addButton.id = "addButton"; // Ajout de l'ID au bouton
       galerieDiv.appendChild(ligneGrises);
       galerieDiv.appendChild(addButton);
-   
 
       //--------------–--------------------------------------------
       //----------------    Modale n2    -------------------------
@@ -305,31 +304,26 @@ buttonEdition.addEventListener("click", function () {
           }
         });
 
-        // input Titre
+        // Création du label pour le titre
         var labelTitre = document.createElement("label");
         labelTitre.textContent = "Titre ";
-        labelTitre.htmlFor = "inputTitre"; 
+        labelTitre.htmlFor = "inputTitre";
         labelTitre.style =
-          "font-size: 16px; color: black; display: block; position:relative;; left: 15%; margin-top: 32px ;margin-bottom: 15px";
-        
-          var inputTitre = document.createElement("input");
-          inputTitre.id = "titre"; 
-          inputTitre.style.cssText =
-            "width: 420px; height: 51px; position: relative;left: 15%; border: none; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);";
-          
-          
-          document.addEventListener('DOMContentLoaded', (event) => {
-            let baliseNom = document.getElementById("nom");
-            if (baliseNom) {
-              
-              baliseNom.addEventListener('input', (event) => {
-                let nom = event.target.value;
-                console.log(nom.value); 
-              });
-            }
-          });
+          "font-size: 16px; color: black; display: block; position:relative; left: 15%; margin-top: 32px; margin-bottom: 15px";
 
+        // Création de l'input pour le titre
+        var inputTitre = document.createElement("input");
+        inputTitre.id = "titre";
+        inputTitre.type = "text";
+        inputTitre.name = "titre"; 
+        inputTitre.style.cssText =
+          "width: 420px; height: 51px; position: relative; left: 15%; border: none; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);";
 
+        // Ajout de l'écouteur d'événements sur l'inputTitre pour récupérer sa valeur lors de la saisie
+        inputTitre.addEventListener("input", (event) => {
+          let titre = event.target.value; // Accès direct à la valeur de l'input
+          console.log(titre); // Affichage de la valeur dans la console
+        });
 
         // Select Catégorie
         // Création et configuration du label pour le select
@@ -380,6 +374,7 @@ buttonEdition.addEventListener("click", function () {
         btnValider.id = "btnValider"; // Ajout d'un ID pour cohérence
         btnValider.textContent = "Valider";
         document.body.appendChild(btnValider); // Ajout du bouton au document
+
         function verifierEtats() {
           const tousRemplis =
             inputTitre.value.trim() !== "" &&
@@ -392,30 +387,27 @@ buttonEdition.addEventListener("click", function () {
         selectCategorie.addEventListener("change", verifierEtats);
         inputPhoto.addEventListener("change", verifierEtats);
 
-        // Appel initial pour définir l'état initial du bouton
         verifierEtats();
 
-        // Envoie du formulaire
+        const selectedValue = this.value;
+        let nom = inputTitre.value;
+        console.log(nom.value);
 
-
-        const formData = new FormData();
-        const categoryId = category.value;
-        const categoryName = category.options[category.selectedIndex].text;
-
-        formData.append("category", selectCategorie.value);
-        formData.append("title", nom.value);
-
-        function stockerToken(token) {
-          localStorage.setItem("token", token);
-        }
-        document.addEventListener("submit", async (e) => {
+        btnValider.addEventListener("click", async (e) => {
+          // Changez "submit" par "click" si btnValider est un bouton. Utilisez "submit" sur l'événement du formulaire.
           e.preventDefault();
+          const formData = new FormData();
+          formData.append("image", inputPhoto.files[0]);
+          formData.append("category", selectedValue);
+          formData.append("title", titre);
+          function stockerToken(token) {
+            localStorage.setItem("token", token);
+          }
 
-          fetch("http://localhost:5678/api/works/", {
+          fetch("http://localhost:5678/api/works", {
             method: "POST",
-            body: JSON.stringify(formData),
+            body: formData,
             headers: {
-              "Content-Type": "multipart/form-data",
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           })
@@ -429,22 +421,6 @@ buttonEdition.addEventListener("click", function () {
             });
         });
 
-        async function sendData(formData) {
-          try {
-            const response = await fetch("http://localhost:5678/api/works/", {
-              method: "POST",
-              body: formData,
-              headers: {
-                // "Content-Type": "multipart/form-data" est généralement pas nécessaire car le navigateur l'ajoute automatiquement avec le bon 'boundary'
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            });
-            const data = await response.json();
-            console.log("Réponse du serveur:", data);
-          } catch (error) {
-            console.error("Erreur lors de l'envoi des données:", error);
-          }
-        }
         // Création d'élément dans DOM
         fenetreDiv.append(
           flecheRetour,
