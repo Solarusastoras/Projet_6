@@ -1,28 +1,3 @@
-function stockerToken(token) {
-  if (token) {
-    localStorage.setItem("token", token);
-    return true; // Indique que le token a été stocké
-  }
-  return false;
-}
-
-function tokenEstInvalide() {
-  const token = localStorage.getItem("token");
-  return token && token.length === 0; // Vérifie si le token est non nul et non vide
-}
-
-function utilisateurNonConnecte() {
-  if (okenEstInvalide()) {
-    divEditionMode.style.display = "none";
-    iconBis.style.display = "none";
-    iconBis.style.color = "transparent";
-    console.error("Token non reçu ou invalide.");
-  } else {
-    divEditionMode.style.display = "block";
-    iconBis.style.display = "block";
-    iconBis.style.color = "black";
-  }
-}
 // Creation banniere edition
 // Création de la div pour le mode édition
 var divEditionMode = document.createElement("div");
@@ -32,9 +7,8 @@ divEditionMode.classList.add("edition_mod");
 var icon = document.createElement("i");
 icon.className = "fa-regular fa-pen-to-square";
 divEditionMode.appendChild(icon);
+divEditionMode.classList.add("div_edition-mode");
 divEditionMode.append(" mode édition");
-divEditionMode.style =
-  "text-align: center; display: flex; justify-content: center; flex-direction: row; gap: 10px; height: 59px; min-width: 191%; padding-top: 25px; font-size: 16px; margin-left: -420px; background-color: black; color: white;";
 
 var header = document.querySelector("header");
 // Insérer la div avant le header
@@ -60,16 +34,37 @@ button.appendChild(document.createTextNode("modifier"));
 
 // Insérer le bouton dans le DOM juste après l'élément <h2> ciblé
 h2MesProjets.insertAdjacentElement("afterend", button);
-
-// Création de la div pour le mode édition
 var divEditionMode = document.createElement("div");
 divEditionMode.classList.add("edition_mod");
-
-// Fonction pour vérifier la page et ajuster la visibilité de l'élément
-
 const buttonEdition = document.querySelector(".edition");
 const boutonConnexion = document.querySelector(".loginButton");
 var lienLogin = document.querySelector("span");
+
+function stockerToken(token) {
+  if (token) {
+    localStorage.setItem("token", token);
+    return true; // Indique que le token a été stocké
+  }
+  return false;
+}
+
+function tokenEstInvalide() {
+  const token = localStorage.getItem("token");
+  return token && token.length === 0; // Vérifie si le token est non nul et non vide
+}
+
+function utilisateurNonConnecte() {
+  if (tokenEstInvalide()) {
+    divEditionMode.style.display = "none";
+    iconBis.style.display = "none";
+    iconBis.style.color = "transparent";
+    console.error("Token non reçu ou invalide.");
+  } else {
+    divEditionMode.style.display = "block";
+    iconBis.style.display = "block";
+    iconBis.style.color = "black";
+  }
+}
 
 // Mise en place des éléments admin
 const elementEditionMode = document.querySelector(".edition_mode");
@@ -107,26 +102,23 @@ buttonEdition.addEventListener("click", function () {
     overlay = document.createElement("div");
     overlay.id = "overlay";
     document.body.appendChild(overlay);
-    overlay.style =
-      "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(128, 128, 128, 0.6); z-index: 50;";
   }
+
+  //--------------–--------------------------------------------
+  //----------------    Modale n1   -------------------------
+  //--------------–--------------------------------------------
 
   const galerieDiv = document.createElement("div");
   galerieDiv.id = "galerie-photo";
   document.body.appendChild(galerieDiv);
-  galerieDiv.style =
-    "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 630px; height: 688px; background-color: white; z-index: 100;border-radius: 10px;";
 
   const titre = document.createElement("h3");
   titre.textContent = "Galerie photo";
+  titre.classList.add("titre_galerie");
   galerieDiv.appendChild(titre);
-  titre.style =
-    "color: black; display: flex; justify-content: center; margin: 64px 0px 50px 0px;font-size: 26px; font-weight: bold;";
 
   const iconeCroix = document.createElement("i");
   iconeCroix.className = "fa-solid fa-xmark";
-  iconeCroix.style =
-    "position: absolute; top: 30px; right: 50px; cursor: pointer; font-size: 25px;";
   iconeCroix.addEventListener("click", function () {
     galerieDiv.remove();
     overlay.remove();
@@ -134,7 +126,7 @@ buttonEdition.addEventListener("click", function () {
   galerieDiv.appendChild(iconeCroix);
 
   overlay.addEventListener("click", function (event) {
-    // Vérifie si le clic a eu lieu sur l'overlay lui-même et non sur un enfant
+    // check si le clic a eu lieu sur l'overlay
     if (event.target === overlay) {
       galerieDiv.remove();
       overlay.remove();
@@ -145,8 +137,7 @@ buttonEdition.addEventListener("click", function () {
     .then((response) => response.json())
     .then((images) => {
       const conteneurImages = document.createElement("div");
-      conteneurImages.style =
-        "display: flex; flex-wrap: wrap; justify-content: left; gap: 10px; padding: 20px; magin-bottom: 20px; margin-left: 80px";
+      conteneurImages.className = "conteneur-images";
       galerieDiv.appendChild(conteneurImages);
 
       images.forEach((imageObj) => {
@@ -161,8 +152,7 @@ buttonEdition.addEventListener("click", function () {
 
         // Crée un conteneur pour l'icône poubelle
         const iconContainer = document.createElement("div");
-        iconContainer.style =
-          "position: absolute; top: 6px; right: 5px; height: 17px; width: 17px; background-color: black; display: flex; justify-content: center; align-items: center; cursor: pointer;";
+        iconContainer.className = "icon_container";
 
         // Crée l'icône de suppression
         const deleteIcon = document.createElement("i");
@@ -206,7 +196,6 @@ buttonEdition.addEventListener("click", function () {
           }
         });
 
-        // Ajoute l'icône au conteneur de l'icône, puis le conteneur de l'icône au conteneur de l'image
         iconContainer.appendChild(deleteIcon);
         imageContainer.appendChild(img);
         imageContainer.appendChild(iconContainer);
@@ -214,19 +203,16 @@ buttonEdition.addEventListener("click", function () {
       });
 
       var ligneGrises = document.createElement("div");
-      ligneGrises.style =
-        "width: 420px; height: 2px; background-color: #B3B3B3; margin-top: 45px; margin-bottom: 32px; margin-left: 16%";
+      ligneGrises.className = "ligne_grises";
 
       // Crée un bouton pour ajouter une image
       const addButton = document.createElement("button");
       addButton.textContent = "Ajouter une photo";
-      // Style du bouton, ajustez selon vos besoins
-      addButton.style =
-        "position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); padding: 10px 20px;background-color: #1d6154; color: white";
-
+      addButton.classList.add("add_button");
+      addButton.id = "addButton"; // Ajout de l'ID au bouton
       galerieDiv.appendChild(ligneGrises);
-      // Ajoute le bouton à galerieDiv
       galerieDiv.appendChild(addButton);
+   
 
       //--------------–--------------------------------------------
       //----------------    Modale n2    -------------------------
@@ -244,15 +230,12 @@ buttonEdition.addEventListener("click", function () {
         titre1.style =
           "text-align: center; margin-top: 67px; font-size: 28px; margin-bottom: -40px; ";
         fenetreDiv.appendChild(titre1);
-
         var flecheRetour = document.createElement("button");
         flecheRetour.innerHTML = '<i class="fa-solid fa-arrow-left"></i> ';
         flecheRetour.style =
           "position: absolute; top: 27px; left: 20px; cursor: pointer; font-size: 200%; border: transparent !important; color: black;";
-
         // Crée un nouveau div pour le carré bleu
         const carreBleu = document.createElement("div");
-
         // Définit le style du carré
         carreBleu.style =
           "width: 420px; height: 169px; background-color: #E8F1F6; display: flex; flexDirection: column; justifyContent: center; alignItems: center; margin: 0 auto;";
@@ -268,66 +251,85 @@ buttonEdition.addEventListener("click", function () {
           galerieDiv.removeChild(galerieDiv.lastChild);
         });
 
-        // Création de l'élément input de type file
-        var inputPhoto = document.createElement("input");
-        inputPhoto.setAttribute("id", "input_file");
-        inputPhoto.setAttribute("type", "file");
-        inputPhoto.accept = "image/*";
-        inputPhoto.setAttribute("accept", "image/png, image/jpeg");
-        inputPhoto.style.cssText = "z-index: 150; display: none;";
-        carreBleu.appendChild(inputPhoto);
-
-        // Création de l'élément img pour la prévisualisation
-        var previewImage = document.createElement("img");
-        previewImage.id = "previewImage";
-        previewImage.style.display = "none"; // Cache l'image par défaut
-        carreBleu.appendChild(previewImage); // Ajoute l'image au conteneur spécifié
-
-        // Gestion de l'événement change sur inputPhoto
-        inputPhoto.addEventListener("change", function () {
-          if (this.files && this.files[0]) {
-            var file = this.files[0]; // Obtient le fichier sélectionné
-            let src = URL.createObjectURL(file);
-
-            // Met à jour l'attribut src de previewImage et modifie le style pour l'afficher
-            previewImage.src = src;
-            previewImage.style.cssText =
-              "display: block; width: 129px; height: 169px;";
-            previewImage.classList.add("preview");
-
-            // Modifie le style de carreBleu pour afficher l'image correctement
-            carreBleu.style.cssText =
-              "display: flex; margin-top: 80px; margin-left: 100px; justify-content: center; align-items: center;";
-            // Cache les éléments non nécessaires après la sélection de l'image
-            boutonAjouterPhoto.style.display = "none";
-            iconeImage.style.display = "none";
-            texteFormats.style.display = "none";
-          }
-        });
         // Crée un bouton pour ajouter une photo dans carré bleu
+
         const boutonAjouterPhoto = document.createElement("button");
         boutonAjouterPhoto.textContent = "+ Ajouter une photo";
-        boutonAjouterPhoto.style =
-          "width: 173px; height: 36px; margin-top: 40px; display: flex; justify-content: center; align-items: center; margin-left: auto; margin-right: auto; position: relative; top: 20%; left: -1%; font-size: 14px; background-color: #CBD6DC;color:#306685; border: none";
+        boutonAjouterPhoto.style.cssText =
+          "width: 173px; height: 36px; margin-top: 40px; display: flex; justify-content: center; align-items: center; margin-left: auto; margin-right: auto; position: relative; top: 20%; left: -1%; font-size: 14px; background-color: #CBD6DC; color:#306685; border: none;";
+        carreBleu.appendChild(boutonAjouterPhoto);
 
-        // Crée un élément p pour le texte des formats et taille max
         const texteFormats = document.createElement("p");
         texteFormats.textContent = "jpg, png : 4Mo max";
         texteFormats.style =
           "position: relative; top: 85%; left: 20%; font-size: 80%;";
+        carreBleu.appendChild(texteFormats); // Assurez-vous que texteFormats est ajouté à carreBleu ou à un autre élément visible
+
+        var inputPhoto = document.createElement("input");
+        inputPhoto.type = "file";
+        inputPhoto.id = "inputPhoto";
+        inputPhoto.style.display = "none";
+        document.body.appendChild(inputPhoto);
+
+        // Création de l'élément img pour la prévisualisation
+        var previewImage = document.createElement("img");
+        previewImage.id = "previewImage";
+        previewImage.style = "display: none;"; // Initialement masqué
+        carreBleu.appendChild(previewImage);
+
+        boutonAjouterPhoto.addEventListener("click", function () {
+          inputPhoto.click();
+          event.preventDefault();
+        });
+
+        inputPhoto.addEventListener("change", function () {
+          var file = this.files[0];
+          if (file) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+              previewImage.src = e.target.result;
+              previewImage.style.display = "block";
+              carreBleu.style.display = "flex";
+              carreBleu.style.marginTop = "80px";
+              carreBleu.style.marginLeft = "100px";
+              carreBleu.style.justifyContent = "center";
+              carreBleu.style.marginTop = "80px";
+              carreBleu.style.alignItems = "center";
+              previewImage.style =
+                "display: block; wight: 129px; height: 169px;";
+              boutonAjouterPhoto.style.display = "none";
+              iconeImage.style.display = "none";
+              texteFormats.style.display = "none";
+            };
+            reader.readAsDataURL(file);
+          }
+        });
 
         // input Titre
         var labelTitre = document.createElement("label");
         labelTitre.textContent = "Titre ";
-        labelTitre.htmlFor = "inputTitre"; // Associe le label à l'input par l'ID
+        labelTitre.htmlFor = "inputTitre"; 
         labelTitre.style =
-          "font-size: 16px; color: black; display: block; position:relative; left: 15%; margin-top: 32px ;margin-bottom: 15px";
+          "font-size: 16px; color: black; display: block; position:relative;; left: 15%; margin-top: 32px ;margin-bottom: 15px";
+        
+          var inputTitre = document.createElement("input");
+          inputTitre.id = "titre"; 
+          inputTitre.style.cssText =
+            "width: 420px; height: 51px; position: relative;left: 15%; border: none; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);";
+          
+          
+          document.addEventListener('DOMContentLoaded', (event) => {
+            let baliseNom = document.getElementById("nom");
+            if (baliseNom) {
+              
+              baliseNom.addEventListener('input', (event) => {
+                let nom = event.target.value;
+                console.log(nom.value); 
+              });
+            }
+          });
 
-        var inputTitre = document.createElement("input");
-        inputTitre.type = "text";
-        inputTitre.id = "inputTitre";
-        inputTitre.style.cssText =
-          "width: 420px; height: 51px; position: relative;left: 15%; border: none; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);";
+
 
         // Select Catégorie
         // Création et configuration du label pour le select
@@ -335,8 +337,6 @@ buttonEdition.addEventListener("click", function () {
         titreCategorie.textContent = "Catégorie";
         titreCategorie.style =
           "display:block; font-size: 16px;position:relative; left: 15%; margin-top: 32px; margin-bottom: 15px;";
-
-        // Ajout du titre au document
         document.body.appendChild(titreCategorie);
 
         // Création du select pour les catégories
@@ -373,56 +373,44 @@ buttonEdition.addEventListener("click", function () {
         var ligneGrise = document.createElement("div");
         ligneGrise.style =
           "width: 420px; height: 2px; background-color: grey; margin-top: 45px; margin-bottom: 32px; margin-left: 16%";
-
-        // Ajout de la ligne grise au document
         document.body.appendChild(ligneGrise);
 
         // Création du bouton Valider
         var btnValider = document.createElement("button");
         btnValider.id = "btnValider"; // Ajout d'un ID pour cohérence
         btnValider.textContent = "Valider";
-        btnValider.style =
-          "width: 237px; height: 36px; background-color: #A7A7A7; color: white; border: none; margin-left: 28%;";
         document.body.appendChild(btnValider); // Ajout du bouton au document
+        function verifierEtats() {
+          const tousRemplis =
+            inputTitre.value.trim() !== "" &&
+            selectCategorie.value !== "" &&
+            inputPhoto.files.length > 0;
+          btnValider.style.backgroundColor = tousRemplis ? "#1D6154" : "";
+        }
+        // Attacher la fonction verifierEtats aux événements appropriés
+        inputTitre.addEventListener("input", verifierEtats);
+        selectCategorie.addEventListener("change", verifierEtats);
+        inputPhoto.addEventListener("change", verifierEtats);
+
+        // Appel initial pour définir l'état initial du bouton
+        verifierEtats();
 
         // Envoie du formulaire
 
-        var inputTitreValeurGlobale;
 
-        document.addEventListener("DOMContentLoaded", function () {
-          var inputTitre = document.getElementById("inputTitre");
-          if (inputTitre) {
-            inputTitre.addEventListener("input", function () {
-              const valeurTitre = inputTitre.value;
-
-              console.log(valeurTitre);
-            });
-          }
-        });
-
+        const formData = new FormData();
         const categoryId = category.value;
         const categoryName = category.options[category.selectedIndex].text;
 
-       
-        formData.append("photo", inputPhoto.src);
         formData.append("category", selectCategorie.value);
-        formData.append("title", inputTitreValeurGlobale);
-        const formData = {
-          title: title.value,
-          categoryId: category.value,
-          imagUrl: previewImage.src,
-          category: {
-            id: category.value,
-            name: category.options[category.selectedIndex].text,
-          },
-        };
+        formData.append("title", nom.value);
 
         function stockerToken(token) {
           localStorage.setItem("token", token);
         }
-        form.addEventListener("submit", async (e) => {
+        document.addEventListener("submit", async (e) => {
           e.preventDefault();
-          
+
           fetch("http://localhost:5678/api/works/", {
             method: "POST",
             body: JSON.stringify(formData),
@@ -441,21 +429,22 @@ buttonEdition.addEventListener("click", function () {
             });
         });
 
-        function verifierEtats() {
-          const tousRemplis =
-            inputTitre.value.trim() !== "" &&
-            selectCategorie.value !== "" &&
-            inputPhoto.files.length > 0;
-          btnValider.style.backgroundColor = tousRemplis ? "#1D6154" : "";
+        async function sendData(formData) {
+          try {
+            const response = await fetch("http://localhost:5678/api/works/", {
+              method: "POST",
+              body: formData,
+              headers: {
+                // "Content-Type": "multipart/form-data" est généralement pas nécessaire car le navigateur l'ajoute automatiquement avec le bon 'boundary'
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            });
+            const data = await response.json();
+            console.log("Réponse du serveur:", data);
+          } catch (error) {
+            console.error("Erreur lors de l'envoi des données:", error);
+          }
         }
-
-        // Correction de la fonction manquante et utilisation de sendData
-        btnValider.addEventListener("click", sendData);
-        inputTitre.addEventListener("input", verifierEtats);
-        selectCategorie.addEventListener("change", verifierEtats);
-        boutonAjouterPhoto.addEventListener("click", function () {
-          inputPhoto.click();
-        });
         // Création d'élément dans DOM
         fenetreDiv.append(
           flecheRetour,

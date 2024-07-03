@@ -368,3 +368,179 @@ a {
 .marge_gauche {
   margin-left: 10px;
 }
+
+.div_edition-mode {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  gap: 10px;
+  height: 59px;
+  min-width: 191%;
+  padding-top: 25px;
+  font-size: 16px;
+  margin-left: -420px;
+  background-color: black;
+  color: white;
+}
+
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(128, 128, 128, 0.6);
+  z-index: 50;
+}
+
+.conteneur-images {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+  gap: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  margin-left: 80px;
+}
+
+.icon_container {
+  position: absolute;
+  top: 6px;
+  right: 5px;
+  height: 17px;
+  width: 17px;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.titre_galerie {
+  color: black;
+  display: flex;
+  justify-content: center;
+  margin: 64px 0px 50px 0px;
+  font-size: 26px;
+  font-weight: bold;
+}
+
+#galerie-photo {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 630px;
+  height: 688px;
+  background-color: white;
+  z-index: 100;
+  border-radius: 10px;
+}
+
+.fa-xmark {
+  position: absolute;
+  top: 30px;
+  right: 50px;
+  cursor: pointer;
+  font-size: 25px;
+}
+
+.ligne_grises {
+  width: 420px;
+  height: 2px;
+  background-color: #b3b3b3;
+  margin-top: 45px;
+  margin-bottom: 32px;
+  margin-left: 16%;
+}
+
+.add_button {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  background-color: #1d6154;
+  color: white;
+}
+
+.previewImageStyle {
+  display: block;
+  width: 129px;
+  height: 169px;
+}
+
+#fenetre-id {
+  width: 630px;
+  height: 680px;
+  position: absolute;
+  top: 1%;
+  left: 0%;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.carreBleuStyle {
+  display: flex;
+  margin-top: 80px;
+  margin-left: 100px;
+  justify-content: center;
+  align-items: center;
+}
+
+.titre1Style {
+  text-align: center;
+  margin-top: 67px;
+  font-size: 28px;
+  margin-bottom: -40px;
+}
+
+.fa-arrow-left {
+  position: absolute;
+  top: 30px;
+  left: 20px;
+  cursor: pointer;
+  font-size: 100%;
+  border: transparent !important;
+  color: black;
+}
+
+#category {
+  width: 420px;
+  height: 51px;
+  position: relative;
+  left: 15.5%;
+  border: none;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+
+#btnValider {
+  width: 237px;
+  height: 36px;
+  background-color: #a7a7a7;
+  color: white;
+  border: none;
+  margin-left: 28%;
+}
+
+#inputTitre {
+  width: 420px;
+  height: 51px;
+  position: relative;
+  left: 15%;
+  border: none;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+}
+
+.carreBleuStyle {
+  width: 420px;
+  height: 169px;
+  background-color: #e8f1f6;
+  display: flex;
+  flex-direction: column; 
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
