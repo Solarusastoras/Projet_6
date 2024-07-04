@@ -369,6 +369,7 @@ a {
   margin-left: 10px;
 }
 
+/* 1er modale*/
 .div_edition-mode {
   text-align: center;
   display: flex;
@@ -470,6 +471,8 @@ a {
   height: 169px;
 }
 
+/* 2eme modale*/
+
 #fenetre-id {
   width: 630px;
   height: 680px;
@@ -481,39 +484,89 @@ a {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.carreBleuStyle {
-  display: flex;
-  margin-top: 80px;
-  margin-left: 100px;
-  justify-content: center;
-  align-items: center;
-}
-
-.titre1Style {
+.titre_ajout_photo {
   text-align: center;
   margin-top: 67px;
   font-size: 28px;
   margin-bottom: -40px;
 }
 
-.fa-arrow-left {
+.fleche_retour {
   position: absolute;
-  top: 30px;
+  top: 27px;
   left: 20px;
   cursor: pointer;
-  font-size: 100%;
-  border: transparent !important;
+  font-size: 200%;
+  border: transparent;
   color: black;
 }
 
-#category {
+.icone-image {
+  font-size: 500%;
+  color: #b9c5cc;
+  display: flex;
+  position: relative;
+  top: 10%;
+  left: 40%;
+}
+
+.bouton-ajouter-photo {
+  width: 173px;
+  height: 36px;
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  top: 20%;
+  left: -1%;
+  font-size: 14px;
+  background-color: #cbd6dc;
+  color: #306685;
+  border: none;
+}
+
+.texte-formats {
+  position: relative;
+  top: 85%;
+  left: 20%;
+  font-size: 80%;
+}
+
+.label-style {
+  font-size: 16px;
+  color: black;
+  display: block;
+  position: relative;
+  left: 15%;
+  margin-top: 32px;
+  margin-bottom: 15px;
+}
+
+.input-style,
+.select-style {
   width: 420px;
   height: 51px;
   position: relative;
-  left: 15.5%;
+  left: 15%;
   border: none;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+}
+
+.select-style {
+  left: 15.5%; /* Ajustement spécifique pour le select */
   background-color: white;
+}
+
+.ligne-grise {
+  width: 420px;
+  height: 2px;
+  background-color: grey;
+  margin-top: 45px;
+  margin-bottom: 32px;
+  margin-left: 16%;
 }
 
 #btnValider {
@@ -532,15 +585,4 @@ a {
   left: 15%;
   border: none;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
-}
-
-.carreBleuStyle {
-  width: 420px;
-  height: 169px;
-  background-color: #e8f1f6;
-  display: flex;
-  flex-direction: column; 
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
 }
