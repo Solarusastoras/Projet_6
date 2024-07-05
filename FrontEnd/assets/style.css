@@ -349,6 +349,12 @@ a {
   padding-top: 22px;
 }
 
+figcaption {
+  font-size: 14px;
+  padding-top: 10px;
+
+}
+
 
 /* Banniere et bouttons*/
 .edition_mode_bis {
