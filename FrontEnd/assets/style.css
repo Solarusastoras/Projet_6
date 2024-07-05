@@ -560,7 +560,7 @@ a {
 }
 
 .select-style {
-  left: 15.5%; /* Ajustement spécifique pour le select */
+  left: 15.5%; 
   background-color: white;
 }
 

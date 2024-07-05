@@ -115,43 +115,48 @@ button.addEventListener("click", function () {
         deleteIcon.style = "color: white; font-size: 10px;";
 
         // Supprimer un projet cicle
-        deleteIcon.addEventListener("click", async function () {
-          // Ajout de async ici
-          const confirmation = confirm(
-            "Êtes-vous sûr de vouloir supprimer ce projet ?"
-          );
+        // Utilisation d'une fonction fléchée pour stockerToken
+        const stockerToken = (token) => localStorage.setItem("token", token);
 
-          function stockerToken(token) {
-            localStorage.setItem("token", token);
-          }
-          const projectId = imageObj.id;
-          if (confirmation) {
-            try {
-              const response = await fetch(
-                `http://localhost:5678/api/works/${projectId}`,
-                {
-                  method: "DELETE",
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                  },
-                }
-              );
-              if (!response.ok) {
-                // Vérifie si la réponse est réussie
-                throw new Error(`Erreur: ${response.status}`);
+        // Fonction séparée pour la suppression du projet
+        const supprimerProjet = async (projectId) => {
+          try {
+            const response = await fetch(
+              `http://localhost:5678/api/works/${projectId}`,
+              {
+                method: "DELETE",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
               }
-              window.location.href = "index.html";
-            } catch (error) {
-              console.error("Erreur lors de la suppression du projet", error);
+            );
+            if (!response.ok) {
+              throw new Error(`Erreur: ${response.status}`);
             }
-          } else {
+            window.location.href = "index.html";
+          } catch (error) {
+            console.error("Erreur lors de la suppression du projet", error);
+          }
+        };
+
+        deleteIcon.addEventListener("click", async () => {
+          // Vérification du token avant de procéder
+          const token = localStorage.getItem("token");
+          if (!token) {
             console.log(
               "Token d'authentification non trouvé. Connexion requise."
             );
+            return;
+          }
+
+          const confirmation = confirm(
+            "Êtes-vous sûr de vouloir supprimer ce projet ?"
+          );
+          if (confirmation) {
+            await supprimerProjet(imageObj.id);
           }
         });
-
         iconContainer.appendChild(deleteIcon);
         imageContainer.appendChild(img);
         imageContainer.appendChild(iconContainer);
@@ -182,7 +187,7 @@ button.addEventListener("click", function () {
         titre1.textContent = "Ajout photo";
         titre1.classList.add("titre_ajout_photo");
         fenetreDiv.appendChild(titre1);
-
+        // Fleche retour
         var flecheRetour = document.createElement("button");
         flecheRetour.innerHTML = '<i class="fa-solid fa-arrow-left"></i> ';
         flecheRetour.classList.add("fleche_retour");
@@ -203,7 +208,6 @@ button.addEventListener("click", function () {
         });
 
         // Crée un bouton pour ajouter une photo dans carré bleu
-
         const boutonAjouterPhoto = document.createElement("button");
         boutonAjouterPhoto.textContent = "+ Ajouter une photo";
         boutonAjouterPhoto.classList.add("bouton-ajouter-photo");
@@ -237,7 +241,7 @@ button.addEventListener("click", function () {
             var reader = new FileReader();
             reader.onload = function (e) {
               previewImage.src = e.target.result; // Définit la source de l'élément img
-              // Assurez-vous que le conteneur parent est configuré pour centrer l'image
+
               carreBleu.style.display = "flex";
               carreBleu.style.marginLeft = "100px";
               carreBleu.style.justifyContent = "center";
@@ -249,7 +253,8 @@ button.addEventListener("click", function () {
               iconeImage.style.display = "none";
               texteFormats.style.display = "none";
             };
-            reader.readAsDataURL(file); // Lit le fichier comme une URL de données
+            // Lit le fichier comme une URL de données
+            reader.readAsDataURL(file);
           }
         });
 
@@ -285,31 +290,30 @@ button.addEventListener("click", function () {
         selectCategorie.className = "select-style";
 
         // Création d'un objet pour mapper les noms des catégories à leurs valeurs
-const categoriesMap = {
-  "Objets": 1,
-  "Appartements": 2,
-  "Hotels & restaurants": 3,
-};
+        const categoriesMap = {
+          Objets: 1,
+          Appartements: 2,
+          "Hotels & restaurants": 3,
+        };
 
-// Assurez-vous que selectCategorie est déclaré et sélectionné correctement
-// Exemple: const selectCategorie = document.querySelector('#selectCategorie');
+        // Ajout des options au select à partir de categoriesMap
+        Object.keys(categoriesMap).forEach(function (categorie) {
+          const option = document.createElement("option");
+          option.value = categoriesMap[categorie];
+          option.textContent = categorie;
+          selectCategorie.appendChild(option);
+        });
 
-// Ajout des options au select à partir de categoriesMap
-Object.keys(categoriesMap).forEach(function (categorie) {
-  const option = document.createElement("option");
-  option.value = categoriesMap[categorie];
-  option.textContent = categorie;
-  selectCategorie.appendChild(option);
-});
+        // Gestionnaire d'événement pour récupérer la valeur sélectionnée
+        selectCategorie.addEventListener("change", function () {
+          const valeurSelectionnee = this.value;
+          console.log(
+            "Valeur de la catégorie sélectionnée:",
+            valeurSelectionnee
+          );
+        });
 
-// Gestionnaire d'événement pour récupérer la valeur sélectionnée
-selectCategorie.addEventListener("change", function() {
-  const valeurSelectionnee = this.value;
-  console.log("Valeur de la catégorie sélectionnée:", valeurSelectionnee);
-  // Ici, valeurSelectionnee est le chiffre correspondant à la catégorie sélectionnée
-});
-
-document.body.appendChild(selectCategorie);
+        document.body.appendChild(selectCategorie);
 
         // Définition du style de la ligne grise
         var ligneGrise = document.createElement("div");
@@ -336,6 +340,7 @@ document.body.appendChild(selectCategorie);
 
         verifierEtats();
 
+        // Gestionnaire d'événements pour envoyer les données au serveur
         btnValider.addEventListener("click", async (e) => {
           e.preventDefault();
 
@@ -378,9 +383,9 @@ document.body.appendChild(selectCategorie);
           ligneGrise,
           btnValider
         );
-
         carreBleu.append(iconeImage, texteFormats);
         galerieDiv.appendChild(fenetreDiv);
-      });
-    });
+      });   
+    })
+    .catch(error => console.error('Erreur lors de la récupération des images:', error));
 });
