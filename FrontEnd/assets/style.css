@@ -349,6 +349,8 @@ a {
   padding-top: 22px;
 }
 
+
+/* Banniere et bouttons*/
 .edition_mode_bis {
   display: flex;
   position: relative;
@@ -526,6 +528,7 @@ a {
   background-color: #cbd6dc;
   color: #306685;
   border: none;
+  z-index: 200;
 }
 
 .texte-formats {

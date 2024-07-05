@@ -15,22 +15,22 @@ if (localStorage.getItem("token")) {
   document.body.insertBefore(divEditionMode, header);
 
   // Sélectionner l'élément par son id
-var loginLink = document.querySelector('#loginLink a');
+  var loginLink = document.querySelector("#loginLink a");
 
-// Vérifier si l'élément existe et changer son texte en 'logout'
-if (loginLink) {
-    loginLink.textContent = 'logout';
-}
+  // Vérifier si l'élément existe et changer son texte en 'logout'
+  if (loginLink) {
+    loginLink.textContent = "logout";
+  }
 
-const lienLogout = document.querySelector(".co_deco a");
+  const lienLogout = document.querySelector(".co_deco a");
 
-// Vérifier si le lien existe et que son texte est 'logout'
-if (lienLogout && lienLogout.textContent.toLowerCase() === 'logout') {
-    lienLogout.addEventListener("click", function() {
-        localStorage.removeItem("token");
-        console.log("Token supprimé");
+  // Vérifier si le lien existe et que son texte est 'logout'
+  if (lienLogout && lienLogout.textContent.toLowerCase() === "logout") {
+    lienLogout.addEventListener("click", function () {
+      localStorage.removeItem("token");
+      console.log("Token supprimé");
     });
-}
+  }
   // button pour ouvrir Modale
   const spanProjets = document.querySelector("h2 > .projets");
   // Remonter au parent <h2>
@@ -47,18 +47,17 @@ if (lienLogout && lienLogout.textContent.toLowerCase() === 'logout') {
 
   // Insérer le bouton dans le DOM juste après l'élément <h2> ciblé
   h2MesProjets.insertAdjacentElement("afterend", button);
-};
+}
 
 const button = document.querySelector("button");
-  // Ajout de l'écouteur d'événements sur le bouton d'édition
-  button.addEventListener("click", function () {
-    let overlay = document.querySelector("#overlay");
-    if (!overlay) {
-      overlay = document.createElement("div");
-      overlay.id = "overlay";
-      document.body.appendChild(overlay);
-    }
-    
+// Ajout de l'écouteur d'événements sur le bouton d'édition
+button.addEventListener("click", function () {
+  let overlay = document.querySelector("#overlay");
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.id = "overlay";
+    document.body.appendChild(overlay);
+  }
 
   //--------------–--------------------------------------------
   //----------------    Modale n1   -------------------------
@@ -122,14 +121,15 @@ const button = document.querySelector("button");
             "Êtes-vous sûr de vouloir supprimer ce projet ?"
           );
 
-          const token = stockerToken;
+          function stockerToken(token) {
+            localStorage.setItem("token", token);
+          }
           const projectId = imageObj.id;
           if (confirmation) {
             try {
               const response = await fetch(
                 `http://localhost:5678/api/works/${projectId}`,
                 {
-                  // Ajout de await ici
                   method: "DELETE",
                   headers: {
                     "Content-Type": "application/json",
@@ -236,16 +236,20 @@ const button = document.querySelector("button");
           if (file) {
             var reader = new FileReader();
             reader.onload = function (e) {
-              previewImage.src = e.target.result;
-              previewImage.style.display = "block";
-              carreBleu.style.cssText = "display: flex; margin-top: 80px; margin-left: 100px; justify-content: center; align-items: center;";
+              previewImage.src = e.target.result; // Définit la source de l'élément img
+              // Assurez-vous que le conteneur parent est configuré pour centrer l'image
+              carreBleu.style.display = "flex";
+              carreBleu.style.marginLeft = "100px";
+              carreBleu.style.justifyContent = "center";
+              carreBleu.style.marginTop = "80px";
+              carreBleu.style.alignItems = "center";
               previewImage.style =
                 "display: block; wight: 129px; height: 169px;";
               boutonAjouterPhoto.style.display = "none";
               iconeImage.style.display = "none";
               texteFormats.style.display = "none";
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(file); // Lit le fichier comme une URL de données
           }
         });
 
@@ -281,33 +285,31 @@ const button = document.querySelector("button");
         selectCategorie.className = "select-style";
 
         // Création d'un objet pour mapper les noms des catégories à leurs valeurs
-        const categoriesMap = {
-          Objets: 1,
-          Appartements: 2,
-          "Hotels & restaurants": 3,
-        };
+const categoriesMap = {
+  "Objets": 1,
+  "Appartements": 2,
+  "Hotels & restaurants": 3,
+};
 
-        // Assurez-vous que selectCategorie est déclaré quelque part
-        selectCategorie.addEventListener("change", handleChange);
+// Assurez-vous que selectCategorie est déclaré et sélectionné correctement
+// Exemple: const selectCategorie = document.querySelector('#selectCategorie');
 
-        function handleChange() {
-          const selectedValue = this.value;
-          console.log("Valeur de la catégorie sélectionnée:", selectedValue);
-        }
+// Ajout des options au select à partir de categoriesMap
+Object.keys(categoriesMap).forEach(function (categorie) {
+  const option = document.createElement("option");
+  option.value = categoriesMap[categorie];
+  option.textContent = categorie;
+  selectCategorie.appendChild(option);
+});
 
-        Object.keys(categoriesMap).forEach(function (categorie) {
-          const option = document.createElement("option");
-          option.value = categoriesMap[categorie];
-          option.textContent = categorie;
-          selectCategorie.appendChild(option);
-        });
+// Gestionnaire d'événement pour récupérer la valeur sélectionnée
+selectCategorie.addEventListener("change", function() {
+  const valeurSelectionnee = this.value;
+  console.log("Valeur de la catégorie sélectionnée:", valeurSelectionnee);
+  // Ici, valeurSelectionnee est le chiffre correspondant à la catégorie sélectionnée
+});
 
-        selectCategorie.addEventListener("change", (event) => {
-          let valeurSelectionnee = selectCategorie.value;
-          console.log(valeurSelectionnee); // Affichage de la valeur dans la console (optionnel)
-        });
-
-        document.body.appendChild(selectCategorie);
+document.body.appendChild(selectCategorie);
 
         // Définition du style de la ligne grise
         var ligneGrise = document.createElement("div");
@@ -334,16 +336,14 @@ const button = document.querySelector("button");
 
         verifierEtats();
 
-        let valeurSelectionnee = selectCategorie.value;
-        let nom = inputTitre.value;
-        console.log(nom.value);
-
         btnValider.addEventListener("click", async (e) => {
           e.preventDefault();
+
+          const valeurSelectionnee = selectCategorie.value;
           const formData = new FormData();
           formData.append("image", inputPhoto.files[0]);
           formData.append("category", valeurSelectionnee);
-          formData.append("title", titre);
+          formData.append("title", inputTitre.value);
           function stockerToken(token) {
             localStorage.setItem("token", token);
           }
@@ -367,7 +367,16 @@ const button = document.querySelector("button");
         });
 
         // Création d'élément dans DOM
-        fenetreDiv.append(flecheRetour, boutonAjouterPhoto, carreBleu, labelTitre, inputTitre, titreCategorie, selectCategorie, ligneGrise, btnValider
+        fenetreDiv.append(
+          flecheRetour,
+          boutonAjouterPhoto,
+          carreBleu,
+          labelTitre,
+          inputTitre,
+          titreCategorie,
+          selectCategorie,
+          ligneGrise,
+          btnValider
         );
 
         carreBleu.append(iconeImage, texteFormats);
