@@ -357,6 +357,24 @@ figcaption {
 
 
 /* Banniere et bouttons*/
+.div_edition-mode {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  gap: 10px;
+  height: 59px;
+  min-width: 300%;
+  padding-top: 25px;
+  font-size: 16px;
+  margin-left: -900px;
+  background-color: black;
+  color: white;
+  position: relative;
+  left: -18%;
+}
+
+
 .edition_mode_bis {
   display: flex;
   position: relative;
@@ -377,22 +395,10 @@ figcaption {
   margin-left: 10px;
 }
 
-/* 1er modale*/
-.div_edition-mode {
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  flex-direction: row;
-  gap: 10px;
-  height: 59px;
-  min-width: 191%;
-  padding-top: 25px;
-  font-size: 16px;
-  margin-left: -420px;
-  background-color: black;
-  color: white;
-}
 
+
+
+/* 1er modale*/
 #overlay {
   position: fixed;
   top: 0;
@@ -402,6 +408,7 @@ figcaption {
   background-color: rgba(128, 128, 128, 0.6);
   z-index: 50;
 }
+
 
 .conteneur-images {
   display: flex;
