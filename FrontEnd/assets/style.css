@@ -352,9 +352,7 @@ a {
 figcaption {
   font-size: 14px;
   padding-top: 10px;
-
 }
-
 
 /* Banniere et bouttons*/
 .div_edition-mode {
@@ -364,16 +362,15 @@ figcaption {
   flex-direction: row;
   gap: 10px;
   height: 59px;
-  min-width: 300%;
+  min-width: 200%;
   padding-top: 25px;
   font-size: 16px;
-  margin-left: -900px;
+  margin-left: -400px;
   background-color: black;
   color: white;
   position: relative;
   left: -18%;
 }
-
 
 .edition_mode_bis {
   display: flex;
@@ -395,9 +392,6 @@ figcaption {
   margin-left: 10px;
 }
 
-
-
-
 /* 1er modale*/
 #overlay {
   position: fixed;
@@ -408,7 +402,6 @@ figcaption {
   background-color: rgba(128, 128, 128, 0.6);
   z-index: 50;
 }
-
 
 .conteneur-images {
   display: flex;
@@ -573,7 +566,7 @@ figcaption {
 }
 
 .select-style {
-  left: 15.5%; 
+  left: 15.5%;
   background-color: white;
 }
 
