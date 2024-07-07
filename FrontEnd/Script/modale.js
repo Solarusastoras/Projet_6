@@ -59,9 +59,9 @@ button.addEventListener("click", function () {
     document.body.appendChild(overlay);
   }
 
-  //--------------–--------------------------------------------
+  //--------------–------------------------------------------
   //----------------    Modale n1   -------------------------
-  //--------------–--------------------------------------------
+  //--------------–------------------------------------------
 
   const galerieDiv = document.createElement("div");
   galerieDiv.id = "galerie-photo";
@@ -88,9 +88,13 @@ button.addEventListener("click", function () {
     }
   });
 
-  fetch("http://localhost:5678/api/works")
-    .then((response) => response.json())
-    .then((images) => {
+  async function chargerImages() {
+    try {
+      const response = await fetch("http://localhost:5678/api/works");
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP: ${response.status}`);
+      }
+      const images = await response.json();
       const conteneurImages = document.createElement("div");
       conteneurImages.className = "conteneur-images";
       galerieDiv.appendChild(conteneurImages);
@@ -173,15 +177,16 @@ button.addEventListener("click", function () {
       addButton.id = "addButton";
       galerieDiv.appendChild(ligneGrises);
       galerieDiv.appendChild(addButton);
+  
+      //--------------–--------------------------------------
+      //----------------    Modale n2    --------------------
+      //--------------–--------------------------------------
 
-      //--------------–--------------------------------------------
-      //----------------    Modale n2    -------------------------
-      //--------------–--------------------------------------------
-      // creation fentre et des elements
       addButton.addEventListener("click", function () {
         // Crée une nouvelle "fenêtre" div
         const fenetreDiv = document.createElement("div");
-        fenetreDiv.id = "fenetre-id";
+        fenetreDiv.id = "fenetre-id"; // Donnez un ID unique
+        // Style de la "fenêtre"
         const titre1 = document.createElement("h3");
         titre1.textContent = "Ajout photo";
         titre1.classList.add("titre_ajout_photo");
@@ -260,12 +265,12 @@ button.addEventListener("click", function () {
         // Création du label pour le titre
         var labelTitre = document.createElement("label");
         labelTitre.textContent = "Titre ";
-        labelTitre.htmlFor = "inputTitre"; // Assurez-vous que cela correspond à l'ID de l'input
+        labelTitre.htmlFor = "inputTitre";
         labelTitre.className = "label-style";
 
         // Création de l'input pour le titre
         var inputTitre = document.createElement("input");
-        inputTitre.id = "inputTitre"; // Modifié pour correspondre à la valeur de htmlFor du label
+        inputTitre.id = "titre";
         inputTitre.type = "text";
         inputTitre.name = "titre";
         inputTitre.className = "input-style";
@@ -339,41 +344,44 @@ button.addEventListener("click", function () {
 
         verifierEtats();
 
-        // Envoye les données
-
         async function sendData(url, formData) {
           try {
             const response = await fetch(url, {
               method: "POST",
               body: formData,
               headers: {
+                // Assurez-vous que le token est correctement stocké dans localStorage
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
               },
             });
-
+        
             if (!response.ok) {
               throw new Error(`Erreur HTTP: ${response.status}`);
             }
-
+        
             const data = await response.json();
             console.log("Réponse du serveur:", data);
+            // Redirection ou traitement supplémentaire ici
             window.location.href = "index.html";
           } catch (error) {
             console.error("Erreur lors de l'envoi des données:", error);
           }
         }
-
+        
         // Utilisation de la fonction sendData
-        btnValider.addEventListener("click", (e) => {
+        btnValider.addEventListener("click", async (e) => {
           e.preventDefault();
-
+        
           const formData = new FormData();
+          // Ajoutez vos champs au formData
           formData.append("image", inputPhoto.files[0]);
           formData.append("category", selectCategorie.value);
           formData.append("title", inputTitre.value);
+        
 
-          sendData("http://localhost:5678/api/works", formData);
+          await sendData("http://localhost:5678/api/works", formData);
         });
+
         // Création d'élément dans DOM
         fenetreDiv.append(
           flecheRetour,
@@ -388,9 +396,14 @@ button.addEventListener("click", function () {
         );
         carreBleu.append(iconeImage, texteFormats);
         galerieDiv.appendChild(fenetreDiv);
-      });
-    })
-    .catch((error) =>
-      console.error("Erreur lors de la récupération des images:", error)
-    );
+      });   
+    
+    } catch (error) {
+      console.error("Erreur lors du chargement des images", error);
+    }
+  }
+  
+  chargerImages(); 
 });
+
+    
