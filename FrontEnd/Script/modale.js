@@ -177,12 +177,11 @@ button.addEventListener("click", function () {
       //--------------–--------------------------------------------
       //----------------    Modale n2    -------------------------
       //--------------–--------------------------------------------
-
+      // creation fentre et des elements
       addButton.addEventListener("click", function () {
         // Crée une nouvelle "fenêtre" div
         const fenetreDiv = document.createElement("div");
-        fenetreDiv.id = "fenetre-id"; // Donnez un ID unique
-        // Style de la "fenêtre"
+        fenetreDiv.id = "fenetre-id";
         const titre1 = document.createElement("h3");
         titre1.textContent = "Ajout photo";
         titre1.classList.add("titre_ajout_photo");
@@ -261,12 +260,12 @@ button.addEventListener("click", function () {
         // Création du label pour le titre
         var labelTitre = document.createElement("label");
         labelTitre.textContent = "Titre ";
-        labelTitre.htmlFor = "inputTitre";
+        labelTitre.htmlFor = "inputTitre"; // Assurez-vous que cela correspond à l'ID de l'input
         labelTitre.className = "label-style";
 
         // Création de l'input pour le titre
         var inputTitre = document.createElement("input");
-        inputTitre.id = "titre";
+        inputTitre.id = "inputTitre"; // Modifié pour correspondre à la valeur de htmlFor du label
         inputTitre.type = "text";
         inputTitre.name = "titre";
         inputTitre.className = "input-style";
@@ -340,37 +339,41 @@ button.addEventListener("click", function () {
 
         verifierEtats();
 
-        // Gestionnaire d'événements pour envoyer les données au serveur
-        btnValider.addEventListener("click", async (e) => {
+        // Envoye les données
+
+        async function sendData(url, formData) {
+          try {
+            const response = await fetch(url, {
+              method: "POST",
+              body: formData,
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            });
+
+            if (!response.ok) {
+              throw new Error(`Erreur HTTP: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log("Réponse du serveur:", data);
+            window.location.href = "index.html";
+          } catch (error) {
+            console.error("Erreur lors de l'envoi des données:", error);
+          }
+        }
+
+        // Utilisation de la fonction sendData
+        btnValider.addEventListener("click", (e) => {
           e.preventDefault();
 
-          const valeurSelectionnee = selectCategorie.value;
           const formData = new FormData();
           formData.append("image", inputPhoto.files[0]);
-          formData.append("category", valeurSelectionnee);
+          formData.append("category", selectCategorie.value);
           formData.append("title", inputTitre.value);
-          function stockerToken(token) {
-            localStorage.setItem("token", token);
-          }
 
-          fetch("http://localhost:5678/api/works", {
-            method: "POST",
-            body: formData,
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              console.log(data);
-              console.log("Réponse du serveur:", data);
-              window.location.href = "index.html";
-            })
-            .catch((error) => {
-              console.error("Erreur lors de l'envoi des données:", error);
-            });
+          sendData("http://localhost:5678/api/works", formData);
         });
-
         // Création d'élément dans DOM
         fenetreDiv.append(
           flecheRetour,
@@ -385,7 +388,9 @@ button.addEventListener("click", function () {
         );
         carreBleu.append(iconeImage, texteFormats);
         galerieDiv.appendChild(fenetreDiv);
-      });   
+      });
     })
-    .catch(error => console.error('Erreur lors de la récupération des images:', error));
+    .catch((error) =>
+      console.error("Erreur lors de la récupération des images:", error)
+    );
 });
