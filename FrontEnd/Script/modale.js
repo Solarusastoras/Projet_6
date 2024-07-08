@@ -118,55 +118,48 @@ button.addEventListener("click", function () {
         deleteIcon.className = "fa-solid fa-trash-can";
         deleteIcon.style = "color: white; font-size: 10px;";
 
-        // Supprimer un projet cicle
-        // Utilisation d'une fonction fléchée pour stockerToken
-        const stockerToken = (token) => localStorage.setItem("token", token);
-
+        // Supprimer un projet
         // Fonction séparée pour la suppression du projet
+        const API_URL = "http://localhost:5678/api/works/";
+        const DELETE_CONFIRM_MSG = "Êtes-vous sûr de vouloir supprimer ce projet ?";
+        
+        const getAuthHeaders = () => ({
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        });
+        
         const supprimerProjet = async (projectId) => {
           try {
-            const response = await fetch(
-              `http://localhost:5678/api/works/${projectId}`,
-              {
-                method: "DELETE",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-              }
-            );
+            const response = await fetch(`${API_URL}${projectId}`, {
+              method: "DELETE",
+              headers: getAuthHeaders(),
+            });
             if (!response.ok) {
               throw new Error(`Erreur: ${response.status}`);
             }
             window.location.href = "index.html";
           } catch (error) {
             console.error("Erreur lors de la suppression du projet", error);
+            // Afficher un message d'erreur à l'utilisateur ici
           }
         };
-
-        deleteIcon.addEventListener("click", async () => {
-          // Vérification du token avant de procéder
-          const token = localStorage.getItem("token");
-          if (!token) {
-            console.log(
-              "Token d'authentification non trouvé. Connexion requise."
-            );
-            return;
-          }
-
-          const confirmation = confirm(
-            "Êtes-vous sûr de vouloir supprimer ce projet ?"
-          );
-          if (confirmation) {
-            await supprimerProjet(imageObj.id);
-          }
-        });
+        
+        if (localStorage.getItem("token")) {
+          deleteIcon.addEventListener("click", async () => {
+            if (confirm(DELETE_CONFIRM_MSG)) {
+              await supprimerProjet(imageObj.id);
+            }
+          });
+        } else {
+          console.log(AUTH_ERROR_MSG);
+        }
         iconContainer.appendChild(deleteIcon);
         imageContainer.appendChild(img);
         imageContainer.appendChild(iconContainer);
         conteneurImages.appendChild(imageContainer);
       });
 
+      // Crée une ligne grise 
       var ligneGrises = document.createElement("div");
       ligneGrises.className = "ligne_grises";
 
@@ -234,7 +227,7 @@ button.addEventListener("click", function () {
         previewImage.style = "display: none;";
         carreBleu.appendChild(previewImage);
 
-        boutonAjouterPhoto.addEventListener("click", function () {
+        boutonAjouterPhoto.addEventListener("click", function (event) {
           inputPhoto.click();
           event.preventDefault();
         });
@@ -244,8 +237,8 @@ button.addEventListener("click", function () {
           if (file) {
             var reader = new FileReader();
             reader.onload = function (e) {
-              previewImage.src = e.target.result; // Définit la source de l'élément img
-
+              // Définit la source de l'élément img
+              previewImage.src = e.target.result; 
               carreBleu.style.display = "flex";
               carreBleu.style.marginLeft = "100px";
               carreBleu.style.justifyContent = "center";
@@ -275,10 +268,9 @@ button.addEventListener("click", function () {
         inputTitre.name = "titre";
         inputTitre.className = "input-style";
 
-        // Ajout de l'écouteur d'événements sur l'inputTitre pour récupérer sa valeur lors de la saisie
+        // Ajout de l'écouteur d'événements sur l'inputTitre 
         inputTitre.addEventListener("input", (event) => {
           let titre = event.target.value;
-          console.log(titre);
         });
 
         // Select Catégorie
@@ -316,7 +308,6 @@ button.addEventListener("click", function () {
             valeurSelectionnee
           );
         });
-
         document.body.appendChild(selectCategorie);
 
         // Définition du style de la ligne grise
@@ -336,6 +327,7 @@ button.addEventListener("click", function () {
             selectCategorie.value !== "" &&
             inputPhoto.files.length > 0;
           btnValider.style.backgroundColor = tousRemplis ? "#1D6154" : "";
+          btnValider.disabled = !tousRemplis; 
         }
         // Attacher la fonction verifierEtats aux événements appropriés
         inputTitre.addEventListener("input", verifierEtats);
@@ -343,55 +335,52 @@ button.addEventListener("click", function () {
         inputPhoto.addEventListener("change", verifierEtats);
         verifierEtats();
 
+        // Envoi des données
+        const API_URL = "http://localhost:5678/api/works";
+        const getAuthHeaders = () => ({
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        });
+        
         async function sendData(url, formData) {
           try {
             const response = await fetch(url, {
               method: "POST",
               body: formData,
-              headers: {
-                // Assurez-vous que le token est correctement stocké dans localStorage
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
+              headers: getAuthHeaders(),
             });
-
+        
             if (!response.ok) {
               throw new Error(`Erreur HTTP: ${response.status}`);
             }
-
+        
             const data = await response.json();
             console.log("Réponse du serveur:", data);
-            // Redirection ou traitement supplémentaire ici
             window.location.href = "index.html";
           } catch (error) {
             console.error("Erreur lors de l'envoi des données:", error);
           }
         }
-
-        // Utilisation de la fonction sendData
-        btnValider.addEventListener("click", async (e) => {
-          e.preventDefault();
-
+        
+        function createFormData() {
           const formData = new FormData();
-          // Ajoutez vos champs au formData
           formData.append("image", inputPhoto.files[0]);
           formData.append("category", selectCategorie.value);
           formData.append("title", inputTitre.value);
-
-          await sendData("http://localhost:5678/api/works", formData);
-        });
+          return formData;
+        }
+        
+        if (localStorage.getItem("token")) {
+          btnValider.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const formData = createFormData();
+            await sendData(API_URL, formData);
+          });
+        } else {
+          console.log("Token d'authentification non trouvé. Connexion requise.");
+        }
 
         // Création d'élément dans DOM
-        fenetreDiv.append(
-          flecheRetour,
-          boutonAjouterPhoto,
-          carreBleu,
-          labelTitre,
-          inputTitre,
-          titreCategorie,
-          selectCategorie,
-          ligneGrise,
-          btnValider
-        );
+        fenetreDiv.append(flecheRetour, boutonAjouterPhoto, carreBleu, labelTitre, inputTitre, titreCategorie, selectCategorie, ligneGrise, btnValider);
         carreBleu.append(iconeImage, texteFormats);
         galerieDiv.appendChild(fenetreDiv);
       });
