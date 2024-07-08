@@ -177,7 +177,7 @@ button.addEventListener("click", function () {
       addButton.id = "addButton";
       galerieDiv.appendChild(ligneGrises);
       galerieDiv.appendChild(addButton);
-  
+
       //--------------–--------------------------------------
       //----------------    Modale n2    --------------------
       //--------------–--------------------------------------
@@ -341,7 +341,6 @@ button.addEventListener("click", function () {
         inputTitre.addEventListener("input", verifierEtats);
         selectCategorie.addEventListener("change", verifierEtats);
         inputPhoto.addEventListener("change", verifierEtats);
-
         verifierEtats();
 
         async function sendData(url, formData) {
@@ -354,11 +353,11 @@ button.addEventListener("click", function () {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
               },
             });
-        
+
             if (!response.ok) {
               throw new Error(`Erreur HTTP: ${response.status}`);
             }
-        
+
             const data = await response.json();
             console.log("Réponse du serveur:", data);
             // Redirection ou traitement supplémentaire ici
@@ -367,17 +366,16 @@ button.addEventListener("click", function () {
             console.error("Erreur lors de l'envoi des données:", error);
           }
         }
-        
+
         // Utilisation de la fonction sendData
         btnValider.addEventListener("click", async (e) => {
           e.preventDefault();
-        
+
           const formData = new FormData();
           // Ajoutez vos champs au formData
           formData.append("image", inputPhoto.files[0]);
           formData.append("category", selectCategorie.value);
           formData.append("title", inputTitre.value);
-        
 
           await sendData("http://localhost:5678/api/works", formData);
         });
@@ -396,14 +394,10 @@ button.addEventListener("click", function () {
         );
         carreBleu.append(iconeImage, texteFormats);
         galerieDiv.appendChild(fenetreDiv);
-      });   
-    
+      });
     } catch (error) {
       console.error("Erreur lors du chargement des images", error);
     }
   }
-  
-  chargerImages(); 
+  chargerImages();
 });
-
-    
