@@ -24,7 +24,7 @@ formConnexion.addEventListener("submit", async (event) => {
   })
     .then((res) => {
       if (res.status === 200) {
-        return response.json();
+        return res.json();
       } else {
         throw new Error("Erreur dans l'identifiant ou le mot de passe");
       }
@@ -40,7 +40,7 @@ formConnexion.addEventListener("submit", async (event) => {
 });
 
 function afficherErreur(message) {
-  console.error(message);
+  console.error(message); // Pour le débogage dans la console
 
   const divErreur = document.createElement("div");
   divErreur.classList.add("erreur");
