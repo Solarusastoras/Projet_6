@@ -49,7 +49,6 @@ if (localStorage.getItem("token")) {
   h2MesProjets.insertAdjacentElement("afterend", button);
 }
 
-const button = document.querySelector("button");
 // Ajout de l'écouteur d'événements sur le bouton d'édition
 button.addEventListener("click", function () {
   let overlay = document.querySelector("#overlay");
