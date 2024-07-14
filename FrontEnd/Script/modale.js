@@ -49,8 +49,13 @@ if (localStorage.getItem("token")) {
   h2MesProjets.insertAdjacentElement("afterend", button);
 }
 
-// Ajout de l'écouteur d'événements sur le bouton d'édition
-button.addEventListener("click", function () {
+const button = document.querySelector("button");
+button.addEventListener("click", function (event) {
+  const target = event.target; // Obtient l'élément cliqué
+  if (target.classList.contains("btn_tous") && target.dataset.filter === "0") {
+    return;
+  }
+
   let overlay = document.querySelector("#overlay");
   if (!overlay) {
     overlay = document.createElement("div");
@@ -120,18 +125,19 @@ button.addEventListener("click", function () {
         // Supprimer un projet
         // Fonction séparée pour la suppression du projet
         const API_URL = "http://localhost:5678/api/works/";
-        const DELETE_CONFIRM_MSG = "Êtes-vous sûr de vouloir supprimer ce projet ?";
-        
+        const DELETE_CONFIRM_MSG =
+          "Êtes-vous sûr de vouloir supprimer ce projet ?";
+
         const getAuthHeaders = () => ({
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`
         });
-        
+
         const supprimerProjet = async (projectId) => {
           try {
             const response = await fetch(`${API_URL}${projectId}`, {
               method: "DELETE",
-              headers: getAuthHeaders(),
+              headers: getAuthHeaders()
             });
             if (!response.ok) {
               throw new Error(`Erreur: ${response.status}`);
@@ -142,7 +148,7 @@ button.addEventListener("click", function () {
             // Afficher un message d'erreur à l'utilisateur ici
           }
         };
-        
+
         if (localStorage.getItem("token")) {
           deleteIcon.addEventListener("click", async () => {
             if (confirm(DELETE_CONFIRM_MSG)) {
@@ -158,7 +164,7 @@ button.addEventListener("click", function () {
         conteneurImages.appendChild(imageContainer);
       });
 
-      // Crée une ligne grise 
+      // Crée une ligne grise
       var ligneGrises = document.createElement("div");
       ligneGrises.className = "ligne_grises";
 
@@ -237,7 +243,7 @@ button.addEventListener("click", function () {
             var reader = new FileReader();
             reader.onload = function (e) {
               // Définit la source de l'élément img
-              previewImage.src = e.target.result; 
+              previewImage.src = e.target.result;
               carreBleu.style.display = "flex";
               carreBleu.style.marginLeft = "100px";
               carreBleu.style.justifyContent = "center";
@@ -267,7 +273,7 @@ button.addEventListener("click", function () {
         inputTitre.name = "titre";
         inputTitre.className = "input-style";
 
-        // Ajout de l'écouteur d'événements sur l'inputTitre 
+        // Ajout de l'écouteur d'événements sur l'inputTitre
         inputTitre.addEventListener("input", (event) => {
           let titre = event.target.value;
         });
@@ -288,7 +294,7 @@ button.addEventListener("click", function () {
         const categoriesMap = {
           Objets: 1,
           Appartements: 2,
-          "Hotels & restaurants": 3,
+          "Hotels & restaurants": 3
         };
 
         // Ajout des options au select à partir de categoriesMap
@@ -326,7 +332,7 @@ button.addEventListener("click", function () {
             selectCategorie.value !== "" &&
             inputPhoto.files.length > 0;
           btnValider.style.backgroundColor = tousRemplis ? "#1D6154" : "";
-          btnValider.disabled = !tousRemplis; 
+          btnValider.disabled = !tousRemplis;
         }
         // Attacher la fonction verifierEtats aux événements appropriés
         inputTitre.addEventListener("input", verifierEtats);
@@ -337,21 +343,21 @@ button.addEventListener("click", function () {
         // Envoi des données
         const API_URL = "http://localhost:5678/api/works";
         const getAuthHeaders = () => ({
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`
         });
-        
+
         async function sendData(url, formData) {
           try {
             const response = await fetch(url, {
               method: "POST",
               body: formData,
-              headers: getAuthHeaders(),
+              headers: getAuthHeaders()
             });
-        
+
             if (!response.ok) {
               throw new Error(`Erreur HTTP: ${response.status}`);
             }
-        
+
             const data = await response.json();
             console.log("Réponse du serveur:", data);
             window.location.href = "index.html";
@@ -359,7 +365,7 @@ button.addEventListener("click", function () {
             console.error("Erreur lors de l'envoi des données:", error);
           }
         }
-        
+
         function createFormData() {
           const formData = new FormData();
           formData.append("image", inputPhoto.files[0]);
@@ -367,7 +373,7 @@ button.addEventListener("click", function () {
           formData.append("title", inputTitre.value);
           return formData;
         }
-        
+
         if (localStorage.getItem("token")) {
           btnValider.addEventListener("click", async (e) => {
             e.preventDefault();
@@ -375,11 +381,23 @@ button.addEventListener("click", function () {
             await sendData(API_URL, formData);
           });
         } else {
-          console.log("Token d'authentification non trouvé. Connexion requise.");
+          console.log(
+            "Token d'authentification non trouvé. Connexion requise."
+          );
         }
 
         // Création d'élément dans DOM
-        fenetreDiv.append(flecheRetour, boutonAjouterPhoto, carreBleu, labelTitre, inputTitre, titreCategorie, selectCategorie, ligneGrise, btnValider);
+        fenetreDiv.append(
+          flecheRetour,
+          boutonAjouterPhoto,
+          carreBleu,
+          labelTitre,
+          inputTitre,
+          titreCategorie,
+          selectCategorie,
+          ligneGrise,
+          btnValider
+        );
         carreBleu.append(iconeImage, texteFormats);
         galerieDiv.appendChild(fenetreDiv);
       });
