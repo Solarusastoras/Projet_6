@@ -1,3 +1,11 @@
+const API_URL = "http://localhost:5678/api/works/";
+function getAuthHeaders() {
+  const token = localStorage.getItem("token");
+  return {
+    Authorization: `Bearer ${token}`
+  };
+}
+
 if (localStorage.getItem("token")) {
   // Création de la div pour le mode édition
   var divEditionMode = document.createElement("div");
@@ -49,13 +57,9 @@ if (localStorage.getItem("token")) {
   h2MesProjets.insertAdjacentElement("afterend", button);
 }
 
-const button = document.querySelector("button");
-button.addEventListener("click", function (event) {
+const buttonModale = document.querySelector(".edition");
+buttonModale.addEventListener("click", function (event) {
   const target = event.target; // Obtient l'élément cliqué
-  if (target.classList.contains("btn_tous") && target.dataset.filter === "0") {
-    return;
-  }
-
   let overlay = document.querySelector("#overlay");
   if (!overlay) {
     overlay = document.createElement("div");
@@ -124,40 +128,47 @@ button.addEventListener("click", function (event) {
 
         // Supprimer un projet
         // Fonction séparée pour la suppression du projet
-        const API_URL = "http://localhost:5678/api/works/";
+
         const DELETE_CONFIRM_MSG =
           "Êtes-vous sûr de vouloir supprimer ce projet ?";
 
-        const getAuthHeaders = () => ({
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        });
+        // Ajoutez imageContainer comme argument à la fonction supprimerProjet
+        const supprimerProjet = async (projectId, imageContainer) => {
+          if (!confirm(DELETE_CONFIRM_MSG)) {
+            return; // L'utilisateur a annulé la suppression
+          }
 
-        const supprimerProjet = async (projectId) => {
           try {
-            const response = await fetch(`${API_URL}${projectId}`, {
+            const response = await fetch(`${API_URL}/${projectId}`, {
               method: "DELETE",
               headers: getAuthHeaders()
             });
+
             if (!response.ok) {
-              throw new Error(`Erreur: ${response.status}`);
+              throw new Error("Échec de la suppression du projet");
             }
-            window.location.href = "index.html";
+
+            // Suppression réussie, retirer l'image du DOM
+            if (imageContainer && imageContainer.parentNode) {
+              imageContainer.parentNode.removeChild(imageContainer);
+            }
           } catch (error) {
-            console.error("Erreur lors de la suppression du projet", error);
-            // Afficher un message d'erreur à l'utilisateur ici
+            console.error("Erreur lors de la suppression du projet:", error);
+            // Afficher un message d'erreur à l'utilisateur
           }
         };
 
+        // Modifiez l'écouteur d'événements pour passer imageContainer à supprimerProjet
         if (localStorage.getItem("token")) {
           deleteIcon.addEventListener("click", async () => {
             if (confirm(DELETE_CONFIRM_MSG)) {
-              await supprimerProjet(imageObj.id);
+              await supprimerProjet(imageObj.id, imageContainer);
             }
           });
         } else {
           console.log(AUTH_ERROR_MSG);
         }
+
         iconContainer.appendChild(deleteIcon);
         imageContainer.appendChild(img);
         imageContainer.appendChild(iconContainer);
@@ -171,7 +182,7 @@ button.addEventListener("click", function (event) {
       // Crée un bouton pour ajouter une image
       const addButton = document.createElement("button");
       addButton.textContent = "Ajouter une photo";
-      addButton.classList.add("add_button");
+      addButton.classList.add("add_button", "position_button_modal1");
       addButton.id = "addButton";
       galerieDiv.appendChild(ligneGrises);
       galerieDiv.appendChild(addButton);
@@ -183,7 +194,7 @@ button.addEventListener("click", function (event) {
       addButton.addEventListener("click", function () {
         // Crée une nouvelle "fenêtre" div
         const fenetreDiv = document.createElement("div");
-        fenetreDiv.id = "fenetre-id"; // Donnez un ID unique
+        fenetreDiv.id = "fenetre-id";
         // Style de la "fenêtre"
         const titre1 = document.createElement("h3");
         titre1.textContent = "Ajout photo";
@@ -234,10 +245,10 @@ button.addEventListener("click", function (event) {
 
         boutonAjouterPhoto.addEventListener("click", function (event) {
           inputPhoto.click();
-          event.preventDefault();
         });
 
         inputPhoto.addEventListener("change", function () {
+          event.preventDefault();
           var file = this.files[0];
           if (file) {
             var reader = new FileReader();
@@ -340,13 +351,17 @@ button.addEventListener("click", function (event) {
         inputPhoto.addEventListener("change", verifierEtats);
         verifierEtats();
 
-        // Envoi des données
-        const API_URL = "http://localhost:5678/api/works";
-        const getAuthHeaders = () => ({
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        });
-
         async function sendData(url, formData) {
+          // Vérification du token avant l'envoi
+          const token = localStorage.getItem("token");
+          if (!token) {
+            console.log(
+              "Token d'authentification non trouvé. Connexion requise."
+            );
+            // Afficher un message à l'utilisateur ou rediriger vers la page de connexion
+            return;
+          }
+
           try {
             const response = await fetch(url, {
               method: "POST",
@@ -360,31 +375,28 @@ button.addEventListener("click", function (event) {
 
             const data = await response.json();
             console.log("Réponse du serveur:", data);
-            window.location.href = "index.html";
+            // Afficher un message de succès ou une confirmation avant de rediriger
           } catch (error) {
             console.error("Erreur lors de l'envoi des données:", error);
+            // Afficher un message d'erreur à l'utilisateur
           }
         }
 
         function createFormData() {
           const formData = new FormData();
+          // Assurez-vous que les entrées sont valides (non illustré ici)
           formData.append("image", inputPhoto.files[0]);
           formData.append("category", selectCategorie.value);
           formData.append("title", inputTitre.value);
           return formData;
         }
 
-        if (localStorage.getItem("token")) {
-          btnValider.addEventListener("click", async (e) => {
-            e.preventDefault();
-            const formData = createFormData();
-            await sendData(API_URL, formData);
-          });
-        } else {
-          console.log(
-            "Token d'authentification non trouvé. Connexion requise."
-          );
-        }
+        // Ajout de l'écouteur d'événements sans vérification du token ici
+        btnValider.addEventListener("click", async (e) => {
+          e.preventDefault();
+          const formData = createFormData();
+          await sendData(API_URL, formData);
+        });
 
         // Création d'élément dans DOM
         fenetreDiv.append(

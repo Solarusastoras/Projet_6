@@ -1,48 +1,106 @@
-// Utilisation de const pour les variables immuables
-const worksData = [];
-let currentFilter = "0";
 
-function addWorkData(newWork) {
-  worksData.push(newWork);
-  applyFilter();
-}
+// Créer un nouvel élément div pour contenir les boutons
+const filterContainer = document.createElement("div");
+filterContainer.classList.add("ctn");
 
-function applyFilter() {
-  const filteredData = worksData.filter(work => currentFilter == "0" ? work.categoryId >= 1 && work.categoryId <= 3 : work.categoryId == currentFilter);
-  displayData(filteredData);
-}
+// Créer les boutons de filtrage
+const filters = ["Tous", "Objets", "Appartements", "Hotels & Restaurents"];
+// Ajouté pour stocker toutes les données récupérées
+let allWorks = [];
+const categoryMapping = {
+  1: "Objets",
+  2: "Appartements",
+  3: "Hotels & Restaurents"
+};
 
-document.addEventListener("DOMContentLoaded", async () => {
-  try {
-    const response = await fetch("http://localhost:5678/api/works");
-    const data = await response.json();
-    worksData.push(...data); // Utilisation de spread pour ajouter des éléments
-    applyFilter();
-  } catch (error) {
-    console.error("Erreur lors de la récupération des données de travaux:", error);
+function createFilterButton(filterName) {
+  const button = document.createElement("button");
+  button.textContent = filterName;
+  button.classList.add("filtre");
+  if (filterName === "Tous") {
+    button.classList.add("add_button", "btn_tous");
+  } else if (filterName === "Objets") {
+    button.classList.add("btn_objets");
+  } else if (filterName === "Appartements") {
+    button.classList.add("btn_appart");
+  } else if (filterName === "Hotels & Restaurents") {
+    button.classList.add("btn_resto");
   }
+  button.addEventListener("click", (event) =>
+    setActiveButton(event.currentTarget, filterName)
+  );
+  return button;
+}
 
-  document.addEventListener("click", e => {
-    const button = e.target.closest("button:not(.edition)");
-    if (button) {
-      document.querySelectorAll("button:not(.edition)").forEach(btn => btn.classList.remove("button-clicked"));
-      button.classList.add("button-clicked");
-      currentFilter = button.getAttribute("data-filter");
-      applyFilter();
-    }
-  });
+// Correction apportée pour utiliser categoryMapping dans la fonction setActiveButton
+function setActiveButton(button, filterName) {
+  document
+    .querySelectorAll(".filtre")
+    .forEach((btn) => btn.classList.remove("add_button"));
+  button.classList.add("add_button");
+
+  // Utilisation de categoryMapping pour filtrer les travaux par nom de catégorie
+  const worksToDisplay =
+    filterName === "Tous"
+      ? allWorks
+      : allWorks.filter(
+          (work) => categoryMapping[work.categoryId] === filterName
+        );
+
+  updateDisplay(worksToDisplay);
+}
+
+filters.forEach((filterName) => {
+  const buttonFiltre = createFilterButton(filterName);
+  filterContainer.appendChild(buttonFiltre);
 });
 
-function displayData(data) {
-  const dataContainer = document.getElementById("dataContainer");
-  let html = ''; // Initialisation d'une chaîne HTML vide
+const dataContainer = document.getElementById("dataContainer");
 
-  data.forEach(item => {
-    html += `<figure class="work-item">
-               <img src="${item.imageUrl}" alt="${item.title}">
-               <figcaption>${item.title}</figcaption>
-             </figure>`;
-  });
+// Insérer les boutons de filtrage avant l'élément dataContainer
+dataContainer.parentNode.insertBefore(filterContainer, dataContainer);
 
-  dataContainer.innerHTML = html;
+async function donneeWorks() {
+  try {
+    const response = await fetch("http://localhost:5678/api/works/");
+    if (!response.ok) {
+      throw new Error("Réponse réseau non ok");
+    }
+
+    const data = await response.json();
+    allWorks = data.map((work) => ({
+      categoryId: work.categoryId,
+      imageUrl: work.imageUrl,
+      title: work.title
+    }));
+    updateDisplay(allWorks); // Afficher les données filtrées
+  } catch (error) {
+    console.error("Erreur lors de la récupération des données:", error);
+  }
 }
+
+function updateDisplay(works) {
+  // Effacer l'affichage actuel
+  dataContainer.innerHTML = "";
+
+  works.forEach((work) => {
+    const workElement = document.createElement("div");
+    workElement.classList.add("work-item");
+
+    // Créer et ajouter l'image
+    const imageElement = document.createElement("img");
+    imageElement.src = work.imageUrl;
+    workElement.appendChild(imageElement);
+
+    // Créer et ajouter le titre
+    const titleElement = document.createElement("p");
+    titleElement.textContent = work.title;
+    workElement.appendChild(titleElement);
+
+    // Ajouter le workElement au conteneur principal
+    dataContainer.appendChild(workElement);
+  });
+}
+
+// Appel de la fonction pour initialiser l'affichage
+donneeWorks();

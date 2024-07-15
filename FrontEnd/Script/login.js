@@ -42,6 +42,12 @@ formConnexion.addEventListener("submit", async (event) => {
 function afficherErreur(message) {
   console.error(message); // Pour le débogage dans la console
 
+  // Effacer l'erreur précédente si elle existe
+  const erreurExistante = document.querySelector(".erreur");
+  if (erreurExistante) {
+    erreurExistante.remove();
+  }
+
   const divErreur = document.createElement("div");
   divErreur.classList.add("erreur");
 
@@ -49,7 +55,7 @@ function afficherErreur(message) {
   messageErreurElement.innerText = message;
 
   divErreur.appendChild(messageErreurElement);
-  formConnexion.insertBefore(divErreur, formConnexion.firstChild); // Utilisation de formConnexion
+  formConnexion.insertBefore(divErreur, formConnexion.firstChild); 
 }
 function stockerToken(token) {
   localStorage.setItem("token", token);
