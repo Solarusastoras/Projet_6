@@ -357,26 +357,21 @@ figcaption {
 /* Banniere et bouttons*/
 .div_edition-mode {
   text-align: center;
-  display: flex;
-  justify-content: center;
   flex-direction: row;
   gap: 10px;
   height: 59px;
-  min-width: 150%;
+   width: 100vw;
   padding-top: 25px;
   font-size: 16px;
-  margin-right: 150%;
-  margin-left: -150px;
   background-color: black;
   color: white;
-  position: relative;
-  left: -18%;
+  margin-left: -400px;
 }
 
 .edition_mode_bis {
   display: flex;
   position: relative;
-  left: 42%;
+  margin-left: 42%;
 }
 
 .edition {

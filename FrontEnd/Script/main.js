@@ -131,17 +131,14 @@ buttonClicked.addEventListener("click", () => {
     }
   }, interval);
 });
-function getAuthHeaders() {
-  const token = localStorage.getItem("token");
-  return {
-    Authorization: `Bearer ${token}`
-  };
-}
+
+
+ const token = localStorage.getItem("token");
 
  if (token) {
    // Si un token est présent, cacher les boutons de filtre
-   const filtreHide = document.querySelectorAll(".filtre");
-   filterHide.style.display = "none";
+   const filterHide = document.querySelectorAll(".filtre");
+   filterHide.forEach((filtre) => (filtre.style.display = "none"));
  }
 
 
