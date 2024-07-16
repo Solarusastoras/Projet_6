@@ -109,17 +109,28 @@ function updateDisplay(allworks) {
 }
 
 donneeWorks();
+const buttonClicked = document.querySelector(".edition");
+buttonClicked.addEventListener("click", () => {
+  const startTime = Date.now(); // Enregistrer le temps de début
+  const interval = 1500; // Intervalle entre les appels en millisecondes
+  const duration = 40000;
+  const intervalId = setInterval(async () => {
+    if (Date.now() - startTime > duration) {
+      clearInterval(intervalId); // Arrêter l'intervalle après 4 minutes
+      filterContainer.style.display = ""; // Réafficher le conteneur de filtres si nécessaire
+      return; // Sortir de la fonction
+    }
 
-function refreshDataPeriodically() {
-  if (donneeWorks()) {
-    // Exécute une fois immédiatement et vérifie si de nouvelles données sont obtenues
-    var intervalId = setInterval(function () {
-      if (!donneeWorks()) {
-        // Si aucune nouvelle donnée n'est obtenue
-        clearInterval(intervalId); // Arrête l'exécution périodique
-      }
-    }, 1000);
-  }
-}
+    try {
+      await donneeWorks();
+      window.donneeWorks = donneeWorks;
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données:", error);
+      clearInterval(intervalId); // Arrêter l'intervalle en cas d'erreur
+      filterContainer.style.display = ""; // Réafficher le conteneur de filtres si nécessaire
+    }
+  }, interval);
+});
 
-refreshDataPeriodically();
+
+

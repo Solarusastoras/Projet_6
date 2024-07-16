@@ -98,15 +98,23 @@ buttonModale.addEventListener("click", function (event) {
 
   async function chargerImages() {
     try {
-      const response = await fetch("http://localhost:5678/api/works");
-      if (!response.ok) {
-        throw new Error(`Erreur HTTP: ${response.status}`);
-      }
-      const images = await response.json();
-      const conteneurImages = document.createElement("div");
-      conteneurImages.className = "conteneur-images";
-      galerieDiv.appendChild(conteneurImages);
+        const response = await fetch("http://localhost:5678/api/works");
+        if (!response.ok) {
+            throw new Error(`Erreur HTTP: ${response.status}`);
+        }
+        const images = await response.json();
 
+        // Vérifier si le conteneur d'images existe déjà
+        let conteneurImages = document.querySelector(".conteneur-images");
+        if (conteneurImages) {
+            // Nettoyer le conteneur existant
+            conteneurImages.innerHTML = '';
+        } else {
+            // Créer un nouveau conteneur d'images
+            conteneurImages = document.createElement("div");
+            conteneurImages.className = "conteneur-images";
+            galerieDiv.appendChild(conteneurImages);
+             }
       images.forEach((imageObj) => {
         // Crée un conteneur div pour l'image et l'icône
         const imageContainer = document.createElement("div");
@@ -388,12 +396,23 @@ buttonModale.addEventListener("click", function (event) {
         }
 
         // Ajout de l'écouteur d'événements sans vérification du token ici
-        btnValider.addEventListener("click", async (e) => {
-          e.preventDefault();
-          const formData = createFormData();
-          await sendData(API_URL, formData);
-        });
+btnValider.addEventListener("click", async (e) => {
+  e.preventDefault();
+  const formData = createFormData();
+  await sendData(API_URL, formData);
+  galerieDiv.innerHTML = "";
+   const titre = document.createElement("h3");
+   titre.textContent = "Galerie photo";
+   titre.classList.add("titre_galerie");
+   galerieDiv.appendChild(titre);
+  chargerImages()
+    .then(() => console.log("Images rechargées"))
+    .catch((error) =>
+      console.error("Erreur lors du rechargement des images:", error)
+    );
 
+  
+});
         // Création d'élément dans DOM
         fenetreDiv.append(
           flecheRetour,
@@ -413,16 +432,8 @@ buttonModale.addEventListener("click", function (event) {
       console.error("Erreur lors du chargement des images", error);
     }
   }
-
-  // Exécute une fois immédiatement et vérifie si de nouvelles données sont obtenues
-    chargerImages().then((nouvellesImages) => {
-    if (nouvellesImages) {
-      var intervalId = setInterval(async () => {
-        const imagesChargees = await chargerImages();
-        if (!imagesChargees) {
-          clearInterval(intervalId); // Arrête l'exécution périodique si aucune nouvelle image n'est obtenue
-        }
-      }, 10000); // Répète toutes les 10 secondes
-    }
-  });
+  chargerImages()
+    .then(() => console.log("Images chargées"))
+    .catch((error) => console.error("Erreur lors du chargement des images:", error));
+  
 });
