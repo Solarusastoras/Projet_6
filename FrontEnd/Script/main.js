@@ -1,7 +1,7 @@
 // Créer un nouvel élément div pour contenir les boutons
 const filterContainer = document.createElement("div");
 filterContainer.classList.add("ctn");
-const API_URL = "http://localhost:5678/api/works/";
+
 
 // Créer les boutons de filtrage
 const filters = ["Tous", "Objets", "Appartements", "Hotels & Restaurents"];
@@ -62,7 +62,7 @@ dataContainer.parentNode.insertBefore(filterContainer, dataContainer);
 
 async function donneeWorks() {
   try {
-    const response = await fetch("API_URL");
+    const response = await fetch("http://localhost:5678/api/works/");
     if (!response.ok) {
       throw new Error("Réponse réseau non ok");
     }
@@ -109,9 +109,17 @@ function updateDisplay(allworks) {
 }
 
 donneeWorks();
+
 function refreshDataPeriodically() {
-  donneeWorks(); 
-  setInterval(donneeWorks, 500);
+  if (donneeWorks()) {
+    // Exécute une fois immédiatement et vérifie si de nouvelles données sont obtenues
+    var intervalId = setInterval(function () {
+      if (!donneeWorks()) {
+        // Si aucune nouvelle donnée n'est obtenue
+        clearInterval(intervalId); // Arrête l'exécution périodique
+      }
+    }, 1000);
+  }
 }
 
 refreshDataPeriodically();

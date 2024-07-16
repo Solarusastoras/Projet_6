@@ -98,7 +98,7 @@ buttonModale.addEventListener("click", function (event) {
 
   async function chargerImages() {
     try {
-      const response = await fetch("API_URL");
+      const response = await fetch("http://localhost:5678/api/works");
       if (!response.ok) {
         throw new Error(`Erreur HTTP: ${response.status}`);
       }
@@ -268,12 +268,12 @@ buttonModale.addEventListener("click", function (event) {
         // Création du label pour le titre
         var labelTitre = document.createElement("label");
         labelTitre.textContent = "Titre ";
-        labelTitre.htmlFor = "inputTitre";
+        labelTitre.htmlFor = "titre"; // Modifié pour correspondre à l'id de l'input
         labelTitre.className = "label-style";
 
         // Création de l'input pour le titre
         var inputTitre = document.createElement("input");
-        inputTitre.id = "titre";
+        inputTitre.id = "titre"; // L'id ici doit correspondre à la valeur de l'attribut htmlFor du label
         inputTitre.type = "text";
         inputTitre.name = "titre";
         inputTitre.className = "input-style";
@@ -368,7 +368,6 @@ buttonModale.addEventListener("click", function (event) {
             }
 
             const data = await response.json();
-            
 
             galerieDiv.removeChild(galerieDiv.lastChild);
             console.log("Réponse du serveur:", data);
@@ -414,5 +413,16 @@ buttonModale.addEventListener("click", function (event) {
       console.error("Erreur lors du chargement des images", error);
     }
   }
-  chargerImages();
+
+  // Exécute une fois immédiatement et vérifie si de nouvelles données sont obtenues
+    chargerImages().then((nouvellesImages) => {
+    if (nouvellesImages) {
+      var intervalId = setInterval(async () => {
+        const imagesChargees = await chargerImages();
+        if (!imagesChargees) {
+          clearInterval(intervalId); // Arrête l'exécution périodique si aucune nouvelle image n'est obtenue
+        }
+      }, 10000); // Répète toutes les 10 secondes
+    }
+  });
 });
