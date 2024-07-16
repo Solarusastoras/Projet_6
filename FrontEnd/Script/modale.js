@@ -1,4 +1,3 @@
-
 const API_URL = "http://localhost:5678/api/works/";
 function getAuthHeaders() {
   const token = localStorage.getItem("token");
@@ -8,7 +7,6 @@ function getAuthHeaders() {
 }
 
 if (getAuthHeaders()) {
-
   // Création de la div pour le mode édition
   var divEditionMode = document.createElement("div");
   divEditionMode.classList.add("edition_mod");
@@ -100,7 +98,7 @@ buttonModale.addEventListener("click", function (event) {
 
   async function chargerImages() {
     try {
-      const response = await fetch("http://localhost:5678/api/works");
+      const response = await fetch("API_URL");
       if (!response.ok) {
         throw new Error(`Erreur HTTP: ${response.status}`);
       }
@@ -370,11 +368,10 @@ buttonModale.addEventListener("click", function (event) {
             }
 
             const data = await response.json();
-            console.log("Réponse du serveur:", data);
-
             
 
             galerieDiv.removeChild(galerieDiv.lastChild);
+            console.log("Réponse du serveur:", data);
             // Afficher un message de succès ou une confirmation avant de rediriger
           } catch (error) {
             console.error("Erreur lors de l'envoi des données:", error);

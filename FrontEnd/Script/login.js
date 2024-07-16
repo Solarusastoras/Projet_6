@@ -8,19 +8,19 @@ function afficherErreur(message) {
 }
 
 formConnexion.addEventListener("submit", async (event) => {
-  event.preventDefault();
+  event.preventDefault(); // Empêche le formulaire de se soumettre
 
   const userLogin = {
     email: inputEmail.value,
-    password: inputPassword.value,
+    password: inputPassword.value
   };
   const userBodyValue = JSON.stringify(userLogin);
   fetch("http://localhost:5678/api/users/login", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     },
-    body: userBodyValue,
+    body: userBodyValue
   })
     .then((res) => {
       if (res.status === 200) {
@@ -31,7 +31,7 @@ formConnexion.addEventListener("submit", async (event) => {
     })
     .then((data) => {
       localStorage.setItem("token", data.token);
-      location.href = "./index.html"; // Commentez cette ligne pour le débogage
+     document.location.href = "./index.html"; 
       console.log("Connexion Réussi et le Token est : " + data.token);
     })
     .catch((error) => {

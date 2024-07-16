@@ -1,7 +1,7 @@
-
 // Créer un nouvel élément div pour contenir les boutons
 const filterContainer = document.createElement("div");
 filterContainer.classList.add("ctn");
+const API_URL = "http://localhost:5678/api/works/";
 
 // Créer les boutons de filtrage
 const filters = ["Tous", "Objets", "Appartements", "Hotels & Restaurents"];
@@ -62,7 +62,7 @@ dataContainer.parentNode.insertBefore(filterContainer, dataContainer);
 
 async function donneeWorks() {
   try {
-    const response = await fetch("http://localhost:5678/api/works/");
+    const response = await fetch("API_URL");
     if (!response.ok) {
       throw new Error("Réponse réseau non ok");
     }
@@ -79,28 +79,39 @@ async function donneeWorks() {
   }
 }
 
-function updateDisplay(works) {
-  // Effacer l'affichage actuel
-  dataContainer.innerHTML = "";
+// Fonction pour ajouter un nouvel élément à works et mettre à jour l'affichage
+function addWork(newWork) {
+  allWorks.push(newWork); 
+  updateDisplay(allWorks); 
+}
 
-  works.forEach((work) => {
+// Fonction pour mettre à jour l'affichage
+function updateDisplay(allworks) {
+  const fragment = document.createDocumentFragment(); 
+
+  allworks.forEach((allwork) => {
     const workElement = document.createElement("div");
     workElement.classList.add("work-item");
 
-    // Créer et ajouter l'image
     const imageElement = document.createElement("img");
-    imageElement.src = work.imageUrl;
+    imageElement.src = allwork.imageUrl;
     workElement.appendChild(imageElement);
 
-    // Créer et ajouter le titre
     const titleElement = document.createElement("p");
-    titleElement.textContent = work.title;
+    titleElement.textContent = allwork.title;
     workElement.appendChild(titleElement);
 
-    // Ajouter le workElement au conteneur principal
-    dataContainer.appendChild(workElement);
+    fragment.appendChild(workElement); // Ajouter l'élément au fragment
   });
+
+  dataContainer.innerHTML = ""; 
+  dataContainer.appendChild(fragment); 
 }
 
-// Appel de la fonction pour initialiser l'affichage
 donneeWorks();
+function refreshDataPeriodically() {
+  donneeWorks(); 
+  setInterval(donneeWorks, 500);
+}
+
+refreshDataPeriodically();
