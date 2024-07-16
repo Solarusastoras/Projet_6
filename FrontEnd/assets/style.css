@@ -359,13 +359,16 @@ figcaption {
   text-align: center;
   gap: 10px;
   height: 59px;
-  width: 100vw;
+  width: 98.90vw;
   padding-top: 25px;
   font-size: 16px;
   background-color: black;
   color: white;
-  margin-left: -400px;
+position: absolute;
+left: 0%;
 }
+
+
 
 .edition_mode_bis {
   display: flex;

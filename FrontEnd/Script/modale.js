@@ -10,7 +10,9 @@ if (localStorage.getItem("token")) {
     // Création de la div pour le mode édition
     var divEditionMode = document.createElement("div");
     divEditionMode.classList.add("edition_mod");
-    
+    var header = document.querySelector("header");
+    header.style = "margin-top: 150px;";
+
     // Création de l'icône
     var icon = document.createElement("i");
     icon.className = "fa-regular fa-pen-to-square";
