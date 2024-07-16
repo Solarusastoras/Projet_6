@@ -117,7 +117,7 @@ buttonClicked.addEventListener("click", () => {
   const intervalId = setInterval(async () => {
     if (Date.now() - startTime > duration) {
       clearInterval(intervalId); // Arrêter l'intervalle après 4 minutes
-      filterContainer.style.display = ""; // Réafficher le conteneur de filtres si nécessaire
+      // Réafficher le conteneur de filtres si nécessaire
       return; // Sortir de la fonction
     }
 
@@ -131,6 +131,18 @@ buttonClicked.addEventListener("click", () => {
     }
   }, interval);
 });
+function getAuthHeaders() {
+  const token = localStorage.getItem("token");
+  return {
+    Authorization: `Bearer ${token}`
+  };
+}
+
+ if (token) {
+   // Si un token est présent, cacher les boutons de filtre
+   const filtreHide = document.querySelectorAll(".filtre");
+   filterHide.style.display = "none";
+ }
 
 
 
