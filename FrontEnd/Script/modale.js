@@ -6,39 +6,43 @@ function getAuthHeaders() {
   };
 }
 
-if (getAuthHeaders()) {
-  // Création de la div pour le mode édition
-  var divEditionMode = document.createElement("div");
-  divEditionMode.classList.add("edition_mod");
+if (localStorage.getItem("token")) {
+    // Création de la div pour le mode édition
+    var divEditionMode = document.createElement("div");
+    divEditionMode.classList.add("edition_mod");
+    
+    // Création de l'icône
+    var icon = document.createElement("i");
+    icon.className = "fa-regular fa-pen-to-square";
+    divEditionMode.appendChild(icon);
+    divEditionMode.classList.add("div_edition-mode");
+    divEditionMode.append(" mode édition");
 
-  // Création de l'icône
-  var icon = document.createElement("i");
-  icon.className = "fa-regular fa-pen-to-square";
-  divEditionMode.appendChild(icon);
-  divEditionMode.classList.add("div_edition-mode");
-  divEditionMode.append(" mode édition");
+    var header = document.querySelector("header");
+    // Insérer la div avant le header
+    document.body.insertBefore(divEditionMode, header);
 
-  var header = document.querySelector("header");
-  // Insérer la div avant le header
-  document.body.insertBefore(divEditionMode, header);
+    // Sélectionner l'élément par son id
+    var loginLink = document.querySelector("#loginLink a");
 
-  // Sélectionner l'élément par son id
-  var loginLink = document.querySelector("#loginLink a");
+    // Vérifier si l'élément existe et changer son texte en 'logout'
+    if (loginLink) {
+      loginLink.textContent = "logout";
+    }
 
-  // Vérifier si l'élément existe et changer son texte en 'logout'
-  if (loginLink) {
-    loginLink.textContent = "logout";
-  }
+    const lienLogout = document.querySelector(".co_deco a");
 
-  const lienLogout = document.querySelector(".co_deco a");
-
-  // Vérifier si le lien existe et que son texte est 'logout'
-  if (lienLogout && lienLogout.textContent.toLowerCase() === "logout") {
-    lienLogout.addEventListener("click", function () {
-      localStorage.removeItem("token");
-      console.log("Token supprimé");
-    });
-  }
+    // Vérifier si le lien existe et que son texte est 'logout'
+    if (lienLogout && lienLogout.textContent.toLowerCase() === "logout") {
+      lienLogout.addEventListener("click", function () {
+        localStorage.removeItem("token");
+        console.log("Token supprimé");
+      });
+    }
+  
+} else {
+  console.log("Aucun token trouvé, contenu non affiché.");
+}
   // button pour ouvrir Modale
   const spanProjets = document.querySelector("h2 > .projets");
   // Remonter au parent <h2>
@@ -55,7 +59,6 @@ if (getAuthHeaders()) {
 
   // Insérer le bouton dans le DOM juste après l'élément <h2> ciblé
   h2MesProjets.insertAdjacentElement("afterend", button);
-}
 
 const buttonModale = document.querySelector(".edition");
 buttonModale.addEventListener("click", function (event) {

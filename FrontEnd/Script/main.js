@@ -1,7 +1,6 @@
-// Créer un nouvel élément div pour contenir les boutons
+
 const filterContainer = document.createElement("div");
 filterContainer.classList.add("ctn");
-
 
 // Créer les boutons de filtrage
 const filters = ["Tous", "Objets", "Appartements", "Hotels & Restaurents"];
@@ -81,13 +80,13 @@ async function donneeWorks() {
 
 // Fonction pour ajouter un nouvel élément à works et mettre à jour l'affichage
 function addWork(newWork) {
-  allWorks.push(newWork); 
-  updateDisplay(allWorks); 
+  allWorks.push(newWork);
+  updateDisplay(allWorks);
 }
 
 // Fonction pour mettre à jour l'affichage
 function updateDisplay(allworks) {
-  const fragment = document.createDocumentFragment(); 
+  const fragment = document.createDocumentFragment();
 
   allworks.forEach((allwork) => {
     const workElement = document.createElement("div");
@@ -104,8 +103,8 @@ function updateDisplay(allworks) {
     fragment.appendChild(workElement); // Ajouter l'élément au fragment
   });
 
-  dataContainer.innerHTML = ""; 
-  dataContainer.appendChild(fragment); 
+  dataContainer.innerHTML = "";
+  dataContainer.appendChild(fragment);
 }
 
 donneeWorks();
@@ -132,14 +131,10 @@ buttonClicked.addEventListener("click", () => {
   }, interval);
 });
 
+const token = localStorage.getItem("token");
 
- const token = localStorage.getItem("token");
-
- if (token) {
-   // Si un token est présent, cacher les boutons de filtre
-   const filterHide = document.querySelectorAll(".filtre");
-   filterHide.forEach((filtre) => (filtre.style.display = "none"));
- }
-
-
-
+if (token) {
+  // Si un token est présent, cacher les boutons de filtre
+  const filterHide = document.querySelectorAll(".filtre");
+  filterHide.forEach((filtre) => (filtre.style.display = "none"));
+}

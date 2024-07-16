@@ -357,10 +357,9 @@ figcaption {
 /* Banniere et bouttons*/
 .div_edition-mode {
   text-align: center;
-  flex-direction: row;
   gap: 10px;
   height: 59px;
-   width: 100vw;
+  width: 100vw;
   padding-top: 25px;
   font-size: 16px;
   background-color: black;
@@ -590,4 +589,13 @@ figcaption {
   left: 15%;
   border: none;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+}
+button,
+[type="button"],
+[type="submit"],
+[type="reset"],
+.btn, /* Si vous utilisez une classe comme .btn pour vos boutons */
+.edition_mode_bis /* Et tout autre classe spécifique que vous utilisez pour les boutons */
+{
+  cursor: pointer;
 }
