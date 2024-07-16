@@ -1,3 +1,4 @@
+
 const API_URL = "http://localhost:5678/api/works/";
 function getAuthHeaders() {
   const token = localStorage.getItem("token");
@@ -6,7 +7,8 @@ function getAuthHeaders() {
   };
 }
 
-if (localStorage.getItem("token")) {
+if (getAuthHeaders()) {
+
   // Création de la div pour le mode édition
   var divEditionMode = document.createElement("div");
   divEditionMode.classList.add("edition_mod");
@@ -117,26 +119,28 @@ buttonModale.addEventListener("click", function (event) {
         img.src = imageObj.imageUrl;
         img.style = "width: 77px; height: 103px;";
 
-        // Crée un conteneur pour l'icône poubelle
+        // Création du conteneur et de l'icône de suppression
         const iconContainer = document.createElement("div");
         iconContainer.className = "icon_container";
 
-        // Crée l'icône de suppression
         const deleteIcon = document.createElement("i");
         deleteIcon.className = "fa-solid fa-trash-can";
         deleteIcon.style = "color: white; font-size: 10px;";
 
-        // Supprimer un projet
-        // Fonction séparée pour la suppression du projet
-
+        // Message de confirmation de suppression
         const DELETE_CONFIRM_MSG =
           "Êtes-vous sûr de vouloir supprimer ce projet ?";
 
-        // Ajoutez imageContainer comme argument à la fonction supprimerProjet
+        // Fonction asynchrone pour supprimer un projet
         const supprimerProjet = async (projectId, imageContainer) => {
-          if (!confirm(DELETE_CONFIRM_MSG)) {
-            return; // L'utilisateur a annulé la suppression
+          // Vérification de l'authentification
+          if (!getAuthHeaders()) {
+            console.log(AUTH_ERROR_MSG);
+            return;
           }
+
+          // Confirmation de la suppression par l'utilisateur
+          if (!confirm(DELETE_CONFIRM_MSG)) return;
 
           try {
             const response = await fetch(`${API_URL}/${projectId}`, {
@@ -144,9 +148,8 @@ buttonModale.addEventListener("click", function (event) {
               headers: getAuthHeaders()
             });
 
-            if (!response.ok) {
+            if (!response.ok)
               throw new Error("Échec de la suppression du projet");
-            }
 
             // Suppression réussie, retirer l'image du DOM
             if (imageContainer && imageContainer.parentNode) {
@@ -154,21 +157,14 @@ buttonModale.addEventListener("click", function (event) {
             }
           } catch (error) {
             console.error("Erreur lors de la suppression du projet:", error);
-            // Afficher un message d'erreur à l'utilisateur
+            // Ici, ajouter une logique pour afficher l'erreur à l'utilisateur
           }
         };
 
-        // Modifiez l'écouteur d'événements pour passer imageContainer à supprimerProjet
-        if (localStorage.getItem("token")) {
-          deleteIcon.addEventListener("click", async () => {
-            if (confirm(DELETE_CONFIRM_MSG)) {
-              await supprimerProjet(imageObj.id, imageContainer);
-            }
-          });
-        } else {
-          console.log(AUTH_ERROR_MSG);
-        }
-
+        // Ajout de l'écouteur d'événements sur l'icône de suppression
+        deleteIcon.addEventListener("click", () =>
+          supprimerProjet(imageObj.id, imageContainer)
+        );
         iconContainer.appendChild(deleteIcon);
         imageContainer.appendChild(img);
         imageContainer.appendChild(iconContainer);
@@ -375,6 +371,10 @@ buttonModale.addEventListener("click", function (event) {
 
             const data = await response.json();
             console.log("Réponse du serveur:", data);
+
+            
+
+            galerieDiv.removeChild(galerieDiv.lastChild);
             // Afficher un message de succès ou une confirmation avant de rediriger
           } catch (error) {
             console.error("Erreur lors de l'envoi des données:", error);
