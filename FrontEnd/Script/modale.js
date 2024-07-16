@@ -11,6 +11,7 @@ if (localStorage.getItem("token")) {
     var divEditionMode = document.createElement("div");
     divEditionMode.classList.add("edition_mod");
     var header = document.querySelector("header");
+       document.body.insertBefore(divEditionMode, header);
     header.style = "margin-top: 150px;";
 
     // Création de l'icône
@@ -19,22 +20,15 @@ if (localStorage.getItem("token")) {
     divEditionMode.appendChild(icon);
     divEditionMode.classList.add("div_edition-mode");
     divEditionMode.append(" mode édition");
-
-    var header = document.querySelector("header");
-    // Insérer la div avant le header
-    document.body.insertBefore(divEditionMode, header);
+ 
 
     // Sélectionner l'élément par son id
     var loginLink = document.querySelector("#loginLink a");
-
-    // Vérifier si l'élément existe et changer son texte en 'logout'
     if (loginLink) {
       loginLink.textContent = "logout";
     }
 
     const lienLogout = document.querySelector(".co_deco a");
-
-    // Vérifier si le lien existe et que son texte est 'logout'
     if (lienLogout && lienLogout.textContent.toLowerCase() === "logout") {
       lienLogout.addEventListener("click", function () {
         localStorage.removeItem("token");
@@ -43,21 +37,20 @@ if (localStorage.getItem("token")) {
     }
   
 } else {
+  divEditionMode.style = "display: none;";
   console.log("Aucun token trouvé, contenu non affiché.");
 }
-  // button pour ouvrir Modale
-  const spanProjets = document.querySelector("h2 > .projets");
-  // Remonter au parent <h2>
-  const h2MesProjets = spanProjets.parentNode;
-  const button = document.createElement("button");
-  button.className = "edition";
-
-  // Ajouter l'icône au bouton
-  const iconBis = document.createElement("i");
-  iconBis.id = "editionIcon";
-  iconBis.className = "marge_gauche -- fa-regular fa-pen-to-square";
-  button.appendChild(iconBis);
-  button.appendChild(document.createTextNode("modifier"));
+  // Création et ajout du bouton pour ouvrir la modale
+    const spanProjets = document.querySelector("h2 > .projets");
+    if (spanProjets) {
+      const h2MesProjets = spanProjets.parentNode;
+      const button = document.createElement("button");
+      button.className = "edition";
+      const iconBis = document.createElement("i");
+      iconBis.id = "editionIcon";
+      iconBis.className = "marge_gauche -- fa-regular fa-pen-to-square";
+      button.appendChild(iconBis);
+      button.appendChild(document.createTextNode("modifier"));
 
   // Insérer le bouton dans le DOM juste après l'élément <h2> ciblé
   h2MesProjets.insertAdjacentElement("afterend", button);
@@ -442,3 +435,5 @@ btnValider.addEventListener("click", async (e) => {
     .catch((error) => console.error("Erreur lors du chargement des images:", error));
   
 });
+};
+
