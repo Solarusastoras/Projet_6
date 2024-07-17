@@ -111,8 +111,8 @@ donneeWorks();
 const buttonClicked = document.querySelector(".edition");
 buttonClicked.addEventListener("click", () => {
   const startTime = Date.now(); // Enregistrer le temps de début
-  const interval = 1500; // Intervalle entre les appels en millisecondes
-  const duration = 40000;
+  const interval = 2500; // Intervalle entre les appels en millisecondes
+  const duration = 2 * 60000 ;
   const intervalId = setInterval(async () => {
     if (Date.now() - startTime > duration) {
       clearInterval(intervalId); // Arrêter l'intervalle après 4 minutes

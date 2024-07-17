@@ -37,6 +37,7 @@ if (localStorage.getItem("token")) {
     }
   
 } else {
+  const divEditionMode = document.querySelector(".edition_mod");
   divEditionMode.style = "display: none;";
   console.log("Aucun token trouvé, contenu non affiché.");
 }
