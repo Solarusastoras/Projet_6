@@ -53,7 +53,7 @@ allButtons.forEach((button) => {
   });
 });
 
-let allWorks = []; // Déplacer la déclaration ici pour une portée globale
+// Déplacer la déclaration ici pour une portée globale
 
 // Fonction pour afficher les travaux
 function displayWorks(works) {
@@ -77,7 +77,7 @@ function filterAndDisplayWorks(categoryId) {
   );
   displayWorks(filteredWorks);
 }
-
+let allWorks = []; 
 document.addEventListener("DOMContentLoaded", () => {
   donneeWorks(); // Initialiser allWorks
 
@@ -99,46 +99,39 @@ document.addEventListener("DOMContentLoaded", () => {
 async function donneeWorks() {
   try {
     const response = await fetch("http://localhost:5678/api/works/");
-    if (!response.ok) {
-      throw new Error("Réponse réseau non ok");
-    }
-
+    if (!response.ok) throw new Error("Réponse réseau non ok");
     const data = await response.json();
-    allWorks = data.map((work) => ({
-      categoryId: work.categoryId,
-      imageUrl: work.imageUrl,
-      title: work.title
+    allWorks = data.map(({ categoryId, imageUrl, title }) => ({
+      categoryId,
+      imageUrl,
+      title
     }));
-    // Pas besoin d'appeler updateDisplay ici, sauf si vous souhaitez afficher tous les travaux initialement
   } catch (error) {
     console.error("Erreur lors de la récupération des données:", error);
   }
 }
 
-const buttonClicked = document.querySelector(".edition");
-buttonClicked.addEventListener("click", () => {
-  const startTime = Date.now(); // Enregistrer le temps de début
-  const interval = 2500; // Intervalle entre les appels en millisecondes
-  const duration = 2 * 60000;
-  const intervalId = setInterval(async () => {
-    if (Date.now() - startTime > duration) {
-      clearInterval(intervalId); // Arrêter l'intervalle après 4 minutes
-      // Réafficher le conteneur de filtres si nécessaire
-      return; // Sortir de la fonction
-    }
+// Étape 6: Configuration du bouton d'édition pour rafraîchir les données
 
-    try {
-      await donneeWorks();
-      window.donneeWorks = donneeWorks;
-    } catch (error) {
-      console.error("Erreur lors de la récupération des données:", error);
-      clearInterval(intervalId); // Arrêter l'intervalle en cas d'erreur
-      filterContainer.style.display = ""; // Réafficher le conteneur de filtres si nécessaire
-    }
-  }, interval);
-});
-
-
+  const buttonClicked = document.querySelector(".edition");
+  buttonClicked.addEventListener("click", () => {
+    const startTime = Date.now();
+    const interval = 2500; // 2.5 secondes
+    const duration = 3 * 60000; // 3 minutes
+    const intervalId = setInterval(async () => {
+      if (Date.now() - startTime > duration) {
+        clearInterval(intervalId);
+        return;
+      }
+      try {
+        await donneeWorks();
+        filterAndDisplayWorks(null); // Afficher tous les travaux après la mise à jour
+      } catch (error) {
+        clearInterval(intervalId);
+        console.error("Erreur lors de la mise à jour des données:", error);
+      }
+    }, interval);
+  });
 
 const token = localStorage.getItem("token");
 
