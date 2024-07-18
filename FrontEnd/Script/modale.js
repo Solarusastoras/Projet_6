@@ -7,21 +7,7 @@ function getAuthHeaders() {
 }
 
 if (localStorage.getItem("token")) {
-  // Création de la div pour le mode édition
-  var divEditionMode = document.createElement("div");
-  divEditionMode.classList.add("edition_mod");
-  var header = document.querySelector("header");
-  document.body.insertBefore(divEditionMode, header);
-  header.style = "margin-top: 150px;";
-
-  // Création de l'icône
-  var icon = document.createElement("i");
-  icon.className = "fa-regular fa-pen-to-square";
-  divEditionMode.appendChild(icon);
-  divEditionMode.classList.add("div_edition-mode");
-  divEditionMode.append(" mode édition");
-
-  // Sélectionner l'élément par son id
+  // Changer login en logout et suppression token
   var loginLink = document.querySelector("#loginLink a");
   if (loginLink) {
     loginLink.textContent = "logout";
@@ -33,14 +19,27 @@ if (localStorage.getItem("token")) {
       localStorage.removeItem("token");
       console.log("Token supprimé");
     });
+  } else {
+    console.log(
+      "Aucun lien de déconnexion trouvé ou le texte ne correspond pas."
+    );
   }
-} else {
- const cacheButtonMod = document.querySelector(".edition_mod");
-cacheButtonMod .style = "display: none;";
-  console.log("Aucun token trouvé, contenu non affiché.");
-}
-// Création et ajout du bouton pour ouvrir la modale
-const spanProjets = document.querySelector("h2 > .projets");
+
+  // Création de la div pour le mode édition
+  var divEditionMode = document.createElement("div");
+  divEditionMode.classList.add("edition_mod");
+  var header = document.querySelector("header");
+  document.body.insertBefore(divEditionMode, header);
+  header.style = "margin-top: 150px;";
+  // Création de l'icône
+  var icon = document.createElement("i");
+  icon.className = "fa-regular fa-pen-to-square";
+  divEditionMode.appendChild(icon);
+  divEditionMode.classList.add("div_edition-mode");
+  divEditionMode.append(" mode édition");
+
+  // Création et ajout du bouton pour ouvrir la modale
+  const spanProjets = document.querySelector("h2 > .projets");
   const h2MesProjets = spanProjets.parentNode;
   const buttonMod = document.createElement("button");
   buttonMod.className = "edition";
@@ -53,8 +52,7 @@ const spanProjets = document.querySelector("h2 > .projets");
   // Insérer le bouton dans le DOM juste après l'élément <h2> ciblé
   h2MesProjets.insertAdjacentElement("afterend", buttonMod);
 
-  const buttonModale = document.querySelector(".edition");
-  buttonModale.addEventListener("click", function (event) {
+  buttonMod.addEventListener("click", function (event) {
     const target = event.target; // Obtient l'élément cliqué
     let overlay = document.querySelector("#overlay");
     if (!overlay) {
@@ -446,4 +444,4 @@ const spanProjets = document.querySelector("h2 > .projets");
         console.error("Erreur lors du chargement des images:", error)
       );
   });
-
+}

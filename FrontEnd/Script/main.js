@@ -121,6 +121,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const filterButtons = document.querySelectorAll(".filtre");
     filterButtons.forEach((button) => {
       button.style.display = "none";
+
     });
   }
 });
