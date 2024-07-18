@@ -3,98 +3,61 @@ document.addEventListener("DOMContentLoaded", async () => {
   filterAndDisplayWorks(null);
 });
 
-// Création du conteneur de filtres
+const categoriesUrl = "http://localhost:5678/api/categories/";
 const filterContainer = document.createElement("div");
 filterContainer.classList.add("ctn");
-// Création des boutons
-const buttonTous = document.createElement("button");
-buttonTous.textContent = "Tous";
-buttonTous.classList.add("filtre");
-buttonTous.classList.add("filtre", "active");
-buttonTous.id = "button-tous";
 
-const buttonObjets = document.createElement("button");
-buttonObjets.textContent = "Objets";
-buttonObjets.classList.add("filtre");
-buttonObjets.id = "button-objets";
-
-const buttonApparts = document.createElement("button");
-buttonApparts.textContent = "Appartements";
-buttonApparts.classList.add("filtre");
-buttonApparts.id = "button-apparts";
-
-const buttonHotels = document.createElement("button");
-buttonHotels.textContent = "Hotels & Restaurants";
-buttonHotels.classList.add("filtre");
-buttonHotels.id = "button-hotels";
-
-filterContainer.append(buttonTous, buttonObjets, buttonApparts, buttonHotels);
-
-// Sélection du div où insérer le conteneur de filtres avant
-const dataContainer = document.querySelector(".gallery#dataContainer");
-
-// Insertion du conteneur de filtres avant le div sélectionné
-dataContainer.parentNode.insertBefore(filterContainer, dataContainer);
-
-const allButtons = document.querySelectorAll(".filtre");
-function handleButtonClick(clickedButton) {
-  // Enlever la classe 'add_button' de tous les boutons
-  allButtons.forEach((button) => {
+function handleButtonClick(categoryId) {
+  // Étape 1: Retirer la classe 'add_button' de tous les boutons
+  document.querySelectorAll(".filtre").forEach((button) => {
     button.classList.remove("add_button");
   });
-  // Ajouter la classe 'add_button' au bouton cliqué
-  clickedButton.classList.add("add_button");
+
+  // Si categoryId est null, cela signifie que le bouton "Tous" a été cliqué
+  const buttonId = categoryId === null ? "button-all" : `button-${categoryId}`;
+  const clickedButton = document.getElementById(buttonId);
+  if (clickedButton) {
+    clickedButton.classList.add("add_button");
+  }
+
+  // Continuer avec la logique de filtrage
+  console.log("Filtrer par catégorie:", categoryId);
+  filterAndDisplayWorks(categoryId);
 }
 
-// Ajouter un écouteur d'événements 'click' à chaque bouton
-allButtons.forEach((button) => {
-  button.addEventListener("click", function () {
-    handleButtonClick(this);
-  });
-});
+// Ajout de la fonction activateDefaultButton
 
-// Déplacer la déclaration ici pour une portée globale
 
-// Fonction pour afficher les travaux
-function displayWorks(works) {
-  const container = document.querySelector(".gallery");
-  container.innerHTML = ""; // Nettoyer le contenu précédent
-  works.forEach((work) => {
-    const workElement = document.createElement("div");
-    const imageElement = document.createElement("img");
-    imageElement.src = work.imageUrl;
-    imageElement.alt = work.title;
-    workElement.appendChild(imageElement);
-    workElement.appendChild(document.createTextNode(work.title));
-    container.appendChild(workElement);
-  });
-}
-
-// Fonction pour filtrer et afficher les travaux basés sur categoryId
-function filterAndDisplayWorks(categoryId) {
-  const filteredWorks = allWorks.filter(
-    (work) => categoryId === null || work.categoryId === categoryId
+fetch(categoriesUrl)
+  .then((response) => response.json())
+  .then((categories) => {
+    createFilterButton("Tous", "button-all", null);
+    // Sélectionner le bouton "Tous" par défaut
+    const allButton = document.getElementById("Tous");
+    if (allButton) {
+      allButton.classList.add("add_button");
+      // Simuler un clic sur le bouton "Tous" pour le sélectionner par défaut
+      allButton.click();
+    }
+    categories.forEach((category) => {
+      createFilterButton(category.name, `button-${category.id}`, category.id);
+    });
+    const dataContainer = document.querySelector(".gallery#dataContainer");
+    dataContainer.before(filterContainer);
+  })
+  .catch((error) =>
+    console.error("Erreur lors de la récupération des catégories:", error)
   );
-  displayWorks(filteredWorks);
+function createFilterButton(text, id, categoryId) {
+  const button = document.createElement("button");
+  button.textContent = text;
+  button.classList.add("filtre");
+  button.id = id;
+  button.addEventListener("click", () => handleButtonClick(categoryId));
+  filterContainer.appendChild(button);
 }
-let allWorks = []; 
-document.addEventListener("DOMContentLoaded", () => {
-  donneeWorks(); // Initialiser allWorks
 
-  // Configurer les boutons de filtrage
-  const filtreTous = document.getElementById("button-tous");
-  const filtreObjet = document.getElementById("button-objets");
-  const filtreApparts = document.getElementById("button-apparts");
-  const filtreHotels = document.getElementById("button-hotels");
-
-  filtreTous.addEventListener("click", () => filterAndDisplayWorks(null)); // null pour 'Tous'
-  filtreObjet.addEventListener("click", () => filterAndDisplayWorks(1));
-  filtreApparts.addEventListener("click", () => filterAndDisplayWorks(2));
-  filtreHotels.addEventListener("click", () => filterAndDisplayWorks(3));
-
-  // Sélectionner tous par défaut
-  filtreTous.click();
-});
+let allWorks = [];
 
 async function donneeWorks() {
   try {
@@ -111,34 +74,39 @@ async function donneeWorks() {
   }
 }
 
-// Étape 6: Configuration du bouton d'édition pour rafraîchir les données
+function filterAndDisplayWorks(categoryId) {
+  const filteredWorks =
+    categoryId === null
+      ? allWorks
+      : allWorks.filter((work) => work.categoryId === categoryId);
+  displayWorks(filteredWorks);
+}
 
-  const buttonClicked = document.querySelector(".edition");
-  buttonClicked.addEventListener("click", () => {
-    const startTime = Date.now();
-    const interval = 2500; // 2.5 secondes
-    const duration = 3 * 60000; // 3 minutes
-    const intervalId = setInterval(async () => {
-      if (Date.now() - startTime > duration) {
-        clearInterval(intervalId);
-        return;
-      }
-      try {
-        await donneeWorks();
-        filterAndDisplayWorks(null); // Afficher tous les travaux après la mise à jour
-      } catch (error) {
-        clearInterval(intervalId);
-        console.error("Erreur lors de la mise à jour des données:", error);
-      }
-    }, interval);
+function displayWorks(works) {
+  const container = document.querySelector(".gallery");
+  container.innerHTML = "";
+  works.forEach((work) => {
+    const workElement = document.createElement("div");
+    const imageElement = document.createElement("img");
+    imageElement.src = work.imageUrl;
+    imageElement.alt = work.title;
+    workElement.appendChild(imageElement);
+    workElement.appendChild(document.createTextNode(work.title));
+    container.appendChild(workElement);
   });
+}
+document.addEventListener("DOMContentLoaded", async () => {
+  await donneeWorks();
+  filterAndDisplayWorks(null); 
+});
 
 const token = localStorage.getItem("token");
-
 if (token) {
   // Si un token est présent, cacher les boutons de filtre
   const filterButtons = document.querySelectorAll(".filtre");
   filterButtons.forEach((button) => {
     button.style.display = "none";
+     const divEditionMode = document.querySelector(".edition_mod");
+   divEditionMode.style.display = "none"; 
   });
 }
