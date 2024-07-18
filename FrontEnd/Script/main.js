@@ -8,6 +8,14 @@ const filterContainer = document.createElement("div");
 filterContainer.classList.add("ctn");
 
 function handleButtonClick(categoryId) {
+  // Vérifier si l'ID de la catégorie n'est pas null (ce qui signifie que ce n'est pas le bouton "Tous")
+  if (categoryId !== null) {
+    // Trouver le bouton "Tous" par son ID et retirer la classe 'colorfiltretous'
+    const allButton = document.getElementById("button-all");
+    if (allButton) {
+      allButton.classList.remove("colorfiltretous");
+    }
+  }
   // Retirer la classe 'add_button' de tous les boutons
   document.querySelectorAll(".filtre").forEach((button) => {
     button.classList.remove("add_button");
@@ -51,6 +59,10 @@ function createFilterButton(text, id, categoryId) {
   const button = document.createElement("button");
   button.textContent = text;
   button.classList.add("filtre");
+  if (text === "Tous") {
+    // Identifier le bouton "Tous" par son texte
+    button.classList.add("colorfiltretous"); // Ajouter la classe spécifique
+  }
   button.id = id;
   button.addEventListener("click", () => handleButtonClick(categoryId));
   filterContainer.appendChild(button);
@@ -107,6 +119,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
   if (token) {
     const filterButtons = document.querySelectorAll(".filtre");
-    filterButtons.style.display = "none";
+    filterButtons.forEach((button) => {
+      button.style.display = "none";
+    });
   }
 });

@@ -373,6 +373,10 @@ figcaption {
   position: relative;
   margin-left: 42%;
 }
+.colorfiltretous {
+  background-color: #1d6154;
+  color: white;
+}
 
 .edition {
   border: none;
