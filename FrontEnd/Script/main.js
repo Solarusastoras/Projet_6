@@ -8,7 +8,7 @@ const filterContainer = document.createElement("div");
 filterContainer.classList.add("ctn");
 
 function handleButtonClick(categoryId) {
-  // Étape 1: Retirer la classe 'add_button' de tous les boutons
+  // Retirer la classe 'add_button' de tous les boutons
   document.querySelectorAll(".filtre").forEach((button) => {
     button.classList.remove("add_button");
   });
@@ -16,38 +16,37 @@ function handleButtonClick(categoryId) {
   // Si categoryId est null, cela signifie que le bouton "Tous" a été cliqué
   const buttonId = categoryId === null ? "button-all" : `button-${categoryId}`;
   const clickedButton = document.getElementById(buttonId);
-  if (clickedButton) {
-    clickedButton.classList.add("add_button");
-  }
+  clickedButton.classList.add("add_button");
 
-  // Continuer avec la logique de filtrage
+  if (clickedButton) {
+  }
   console.log("Filtrer par catégorie:", categoryId);
   filterAndDisplayWorks(categoryId);
 }
 
-// Ajout de la fonction activateDefaultButton
+// Creation des bouton filtres depuis API
+document.addEventListener("DOMContentLoaded", function () {
+  fetch(categoriesUrl)
+    .then((response) => response.json())
+    .then((categories) => {
+      createFilterButton("Tous", "button-all", null);
+      categories.forEach((category) => {
+        createFilterButton(category.name, `button-${category.id}`, category.id);
+      });
+      const allButton = document.getElementById("button-all");
+      if (allButton) {
+        allButton.classList.add("add_button");
+        allButton.click();
+      }
+      const dataContainer = document.querySelector(".gallery#dataContainer");
+      dataContainer.before(filterContainer);
+    })
+    .catch((error) =>
+      console.error("Erreur lors de la récupération des catégories:", error)
+    );
+});
 
-
-fetch(categoriesUrl)
-  .then((response) => response.json())
-  .then((categories) => {
-    createFilterButton("Tous", "button-all", null);
-    // Sélectionner le bouton "Tous" par défaut
-    const allButton = document.getElementById("Tous");
-    if (allButton) {
-      allButton.classList.add("add_button");
-      // Simuler un clic sur le bouton "Tous" pour le sélectionner par défaut
-      allButton.click();
-    }
-    categories.forEach((category) => {
-      createFilterButton(category.name, `button-${category.id}`, category.id);
-    });
-    const dataContainer = document.querySelector(".gallery#dataContainer");
-    dataContainer.before(filterContainer);
-  })
-  .catch((error) =>
-    console.error("Erreur lors de la récupération des catégories:", error)
-  );
+// Creation des bouton filtres
 function createFilterButton(text, id, categoryId) {
   const button = document.createElement("button");
   button.textContent = text;
@@ -57,8 +56,8 @@ function createFilterButton(text, id, categoryId) {
   filterContainer.appendChild(button);
 }
 
+// Affiche les oeuvres filtrees
 let allWorks = [];
-
 async function donneeWorks() {
   try {
     const response = await fetch("http://localhost:5678/api/works/");
@@ -97,16 +96,19 @@ function displayWorks(works) {
 }
 document.addEventListener("DOMContentLoaded", async () => {
   await donneeWorks();
-  filterAndDisplayWorks(null); 
+  filterAndDisplayWorks(null);
 });
 
-const token = localStorage.getItem("token");
-if (token) {
-  // Si un token est présent, cacher les boutons de filtre
-  const filterButtons = document.querySelectorAll(".filtre");
-  filterButtons.forEach((button) => {
-    button.style.display = "none";
-     const divEditionMode = document.querySelector(".edition_mod");
-   divEditionMode.style.display = "none"; 
-  });
-}
+// Cache les filtre lors de la connexion
+document.addEventListener("DOMContentLoaded", async () => {
+  await donneeWorks();
+  filterAndDisplayWorks(null);
+
+  const token = localStorage.getItem("token");
+  if (token) {
+    const filterButtons = document.querySelectorAll(".filtre");
+    filterButtons.forEach((button) => {
+      button.remove();
+    });
+  }
+});

@@ -36,8 +36,9 @@ if (localStorage.getItem("token")) {
     });
   }
 } else {
-  const buttonEditionHide = document.querySelector(".edition");
-buttonEditionHide.style.display = "none";
+ const divEditionMode = document.querySelector(".edition_mod");
+ 
+ divEditionMode.style = "display: none;";
   console.log("Aucun token trouvé, contenu non affiché.");
 }
 // Création et ajout du bouton pour ouvrir la modale

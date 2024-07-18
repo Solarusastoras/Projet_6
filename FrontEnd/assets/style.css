@@ -359,17 +359,14 @@ figcaption {
   text-align: center;
   gap: 10px;
   height: 59px;
-  width: 98.90vw;
+  width: 98.9vw;
   padding-top: 25px;
   font-size: 16px;
   background-color: black;
   color: white;
-position: absolute;
-left: 0%;
-
+  position: absolute;
+  left: 0%;
 }
-
-
 
 .edition_mode_bis {
   display: flex;
@@ -383,7 +380,7 @@ left: 0%;
   display: flex;
   position: relative;
   left: 2%;
-  margin-top:0.7%;
+  margin-top: 0.7%;
   gap: 10px;
 }
 
@@ -468,7 +465,7 @@ left: 0%;
 }
 
 .position_button_modal1 {
- margin-left: 35%;
+  margin-left: 35%;
 }
 
 .previewImageStyle {
@@ -599,7 +596,6 @@ button,
 [type="submit"],
 [type="reset"],
 .btn, /* Si vous utilisez une classe comme .btn pour vos boutons */
-.edition_mode_bis /* Et tout autre classe spécifique que vous utilisez pour les boutons */
-{
+.edition_mode_bis /* Et tout autre classe spécifique que vous utilisez pour les boutons */ {
   cursor: pointer;
 }
