@@ -107,8 +107,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
   if (token) {
     const filterButtons = document.querySelectorAll(".filtre");
-    filterButtons.forEach((button) => {
-      button.remove();
-    });
+    filterButtons.style.display = "none";
   }
 });

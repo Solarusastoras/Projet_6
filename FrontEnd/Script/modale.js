@@ -6,7 +6,6 @@ function getAuthHeaders() {
   };
 }
 
-
 if (localStorage.getItem("token")) {
   // Création de la div pour le mode édition
   var divEditionMode = document.createElement("div");
@@ -36,25 +35,23 @@ if (localStorage.getItem("token")) {
     });
   }
 } else {
- const divEditionMode = document.querySelector(".edition_mod");
- 
- divEditionMode.style = "display: none;";
+ const cacheButtonMod = document.querySelector(".edition_mod");
+cacheButtonMod .style = "display: none;";
   console.log("Aucun token trouvé, contenu non affiché.");
 }
 // Création et ajout du bouton pour ouvrir la modale
 const spanProjets = document.querySelector("h2 > .projets");
-if (spanProjets) {
   const h2MesProjets = spanProjets.parentNode;
-  const button = document.createElement("button");
-  button.className = "edition";
+  const buttonMod = document.createElement("button");
+  buttonMod.className = "edition";
   const iconBis = document.createElement("i");
   iconBis.id = "editionIcon";
   iconBis.className = "marge_gauche -- fa-regular fa-pen-to-square";
-  button.appendChild(iconBis);
-  button.appendChild(document.createTextNode("modifier"));
+  buttonMod.appendChild(iconBis);
+  buttonMod.appendChild(document.createTextNode("modifier"));
 
   // Insérer le bouton dans le DOM juste après l'élément <h2> ciblé
-  h2MesProjets.insertAdjacentElement("afterend", button);
+  h2MesProjets.insertAdjacentElement("afterend", buttonMod);
 
   const buttonModale = document.querySelector(".edition");
   buttonModale.addEventListener("click", function (event) {
@@ -449,4 +446,4 @@ if (spanProjets) {
         console.error("Erreur lors du chargement des images:", error)
       );
   });
-}
+
